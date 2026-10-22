@@ -1,0 +1,67 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  /* Custom scrollbar to match the editorial aesthetic */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #f5f0e8;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #d6cbbe;
+    border-radius: 4px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #a89a8c;
+  }
+}
+
+/* Custom range input styling for touch and desktop */
+input[type=range] {
+  accent-color: #991b1b;
+  cursor: pointer;
+  touch-action: pan-x;
+}
+
+input[type=range]::-webkit-slider-thumb {
+  width: 22px;
+  height: 22px;
+  background-color: #991b1b;
+  border: 2px solid #ffffff;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+  cursor: grab;
+}
+
+input[type=range]:active::-webkit-slider-thumb {
+  cursor: grabbing;
+  transform: scale(1.1);
+}
+
+/* Painel final do simulador: entra suavemente quando a meta é atingida */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.resultado-tesouraco {
+  animation: fadeIn 0.7s ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .resultado-tesouraco {
+    animation: none;
+  }
+}
