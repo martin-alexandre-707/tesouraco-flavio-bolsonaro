@@ -272,6 +272,96 @@ export default function Footer() {
             </li>
           </ul>
 
+          <div className="mt-6 rounded-xl border border-stone-300 bg-stone-50 p-4 sm:p-5">
+            <div className="flex flex-wrap items-center gap-2 mb-2">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-stone-500">
+                Debates e Análises
+              </span>
+              <span className="text-[9px] font-mono uppercase tracking-wider px-1.5 py-0.5 rounded bg-amber-100 text-amber-900 border border-amber-300">
+                opinião
+              </span>
+            </div>
+            <p className="text-xs sm:text-sm text-stone-600 leading-relaxed mb-3">
+              Os autores abaixo chegam a conclusões que convergem com os números desta página. São leituras
+              opinativas — não substituem as fontes oficiais.
+            </p>
+            <ul className="space-y-3">
+              <li>
+                <a
+                  href="https://www.youtube.com/watch?v=D9dsaOxmvjo"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-start gap-1 text-[11px] sm:text-xs font-semibold text-red-800 hover:text-red-950 underline underline-offset-2"
+                >
+                  Elias Jabbour — “Explicando o plano econômico de Flávio Bolsonaro”
+                  <ExternalLink className="w-3 h-3 shrink-0" />
+                </a>
+                <p className="mt-1 text-[11px] sm:text-xs text-stone-600 leading-relaxed">
+                  Para Jabbour, é “matematicamente impossível” cortar R$ 200–300 bi sem tocar nos orçamentos
+                  obrigatórios. O caminho seria mexer nos pisos da saúde e da educação e abrir espaço para a
+                  privatização dessas áreas.
+                </p>
+              </li>
+              <li>
+                <a
+                  href="https://www.youtube.com/watch?v=-mybm79ckaM"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-start gap-1 text-[11px] sm:text-xs font-semibold text-red-800 hover:text-red-950 underline underline-offset-2"
+                >
+                  Elias Jabbour — “Encurrala a economista de Flávio: ‘Vem pro debate!’”
+                  <ExternalLink className="w-3 h-3 shrink-0" />
+                </a>
+                <p className="mt-1 text-[11px] sm:text-xs text-stone-600 leading-relaxed">
+                  Jabbour cobra o debate com Daniella Marques e sustenta que a agenda não se explica sem
+                  esconder os cortes em direitos.
+                </p>
+              </li>
+              <li>
+                <a
+                  href="https://www.youtube.com/watch?v=9mni5pEKWRI"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-start gap-1 text-[11px] sm:text-xs font-semibold text-red-800 hover:text-red-950 underline underline-offset-2"
+                >
+                  Jones Manoel — “Um manifesto para as pessoas idosas do Brasil”
+                  <ExternalLink className="w-3 h-3 shrink-0" />
+                </a>
+                <p className="mt-1 text-[11px] sm:text-xs text-stone-600 leading-relaxed">
+                  Manoel dirige o vídeo às pessoas idosas e discute o impacto do ajuste sobre aposentadorias
+                  e benefícios.
+                </p>
+              </li>
+              <li>
+                <a
+                  href="https://www.youtube.com/watch?v=FL-hsuf-NlQ"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-start gap-1 text-[11px] sm:text-xs font-semibold text-red-800 hover:text-red-950 underline underline-offset-2"
+                >
+                  Jones Manoel — “O esquema de Flávio com a Globo e o Tesouraço”
+                  <ExternalLink className="w-3 h-3 shrink-0" />
+                </a>
+                <p className="mt-1 text-[11px] sm:text-xs text-stone-600 leading-relaxed">
+                  Manoel discute o que chama de “esquema” de Flávio com a Globo e a relação da mídia com o
+                  tesouraço.
+                </p>
+              </li>
+            </ul>
+            <p className="mt-3 text-[10px] text-stone-500 leading-relaxed">
+              Síntese do argumento de Jabbour:{' '}
+              <a
+                href="https://vermelho.org.br/2026/10/22/elias-jabbour-alerta-para-ameaca-economica-de-flavio-bolsonaro/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline hover:text-stone-700"
+              >
+                Vermelho, 22/10/2026
+              </a>
+              . Os links levam aos vídeos.
+            </p>
+          </div>
+
           <p className="mt-6 pt-4 border-t border-stone-300 text-[10px] sm:text-[11px] text-stone-500 leading-relaxed">
             Atualizado em outubro de 2026. Os valores são arredondados e servem para dimensionar o esforço fiscal;
             não substituem estudos técnicos caso a caso.
