@@ -29,6 +29,78 @@ export default function Footer() {
             4 anos, o acumulado é cerca de 4x. As reportagens falam em R$ 200–250 bi; usamos R$ 250 bi como teto.
           </p>
 
+          <div className="mb-6 rounded-xl border border-stone-300 overflow-hidden bg-stone-50">
+            <div className="bg-stone-200 px-3.5 py-2.5">
+              <h3 className="text-[11px] sm:text-xs font-mono uppercase tracking-wider text-stone-700 font-bold">
+                De onde vêm os limites do simulador
+              </h3>
+            </div>
+            <div className="divide-y divide-stone-300">
+              <div className="p-3 sm:p-4">
+                <div className="flex items-baseline justify-between gap-2">
+                  <h4 className="text-xs sm:text-sm font-bold text-stone-800">Máquina / Pessoal</h4>
+                  <span className="text-xs font-mono font-bold text-red-800">R$ 40 bi</span>
+                </div>
+                <p className="mt-1 text-[11px] sm:text-xs text-stone-600 leading-relaxed">
+                  DIEESE: 17% do corte (~R$ 42 bi). Câmara: cerca de R$ 70 bi de custeio e bloqueio de R$ 41 bi
+                  em 2025. Arredondado para R$ 40 bi.
+                </p>
+              </div>
+
+              <div className="p-3 sm:p-4">
+                <div className="flex items-baseline justify-between gap-2">
+                  <h4 className="text-xs sm:text-sm font-bold text-stone-800">Previdência</h4>
+                  <span className="text-xs font-mono font-bold text-red-800">R$ 100 bi</span>
+                </div>
+                <p className="mt-1 text-[11px] sm:text-xs text-stone-600 leading-relaxed">
+                  Parte das transferências: DIEESE 51% (~R$ 128 bi com BPC). CDPP: R$ 1,1 trilhão em 10 anos
+                  (~R$ 110 bi/ano). A divisão 100/30 é arredondamento.
+                </p>
+              </div>
+
+              <div className="p-3 sm:p-4">
+                <div className="flex items-baseline justify-between gap-2">
+                  <h4 className="text-xs sm:text-sm font-bold text-stone-800">BPC</h4>
+                  <span className="text-xs font-mono font-bold text-red-800">R$ 30 bi</span>
+                </div>
+                <p className="mt-1 text-[11px] sm:text-xs text-stone-600 leading-relaxed">
+                  Parte das transferências (100 + 30 = 130, próximo dos 128 do DIEESE). A divisão interna é a
+                  única premissa desta linha.
+                </p>
+              </div>
+
+              <div className="p-3 sm:p-4">
+                <div className="flex items-baseline justify-between gap-2">
+                  <h4 className="text-xs sm:text-sm font-bold text-stone-800">Saúde, Educação e outras</h4>
+                  <span className="text-xs font-mono font-bold text-red-800">R$ 80 bi</span>
+                </div>
+                <p className="mt-1 text-[11px] sm:text-xs text-stone-600 leading-relaxed">
+                  DIEESE: 32% = R$ 80 bi. Folha/InfoMoney: R$ 800 bi em 10 anos, média de ~R$ 80 bi/ano.
+                </p>
+              </div>
+
+              <div className="p-3 sm:p-4">
+                <div className="flex items-baseline justify-between gap-2">
+                  <h4 className="text-xs sm:text-sm font-bold text-stone-800">Teto do BPC</h4>
+                  <span className="text-xs font-mono font-bold text-red-800">R$ 50 bi</span>
+                </div>
+                <p className="mt-1 text-[11px] sm:text-xs text-stone-600 leading-relaxed">
+                  Folga do simulador para testar cenários. O cenário que fecha R$ 250 bi usa R$ 30 bi. Não é
+                  projeção nem número oficial.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="mb-6 border-l-4 border-red-800 bg-stone-200/70 px-3.5 py-3">
+            <p className="text-xs sm:text-sm text-stone-700 leading-relaxed">
+              <strong className="text-stone-800">O argumento:</strong> com cerca de R$ 78 bi realmente livres,
+              um corte de R$ 250 bi exige aproximadamente R$ 172 bi de despesas obrigatórias. O DIEESE mostra que
+              51% de um ajuste recai sobre transferências de renda. Não há como fechar a conta sem Previdência,
+              BPC ou benefícios. Isso é uma inferência a partir das fontes — não uma invenção.
+            </p>
+          </div>
+
           <ul className="space-y-5">
             <li className="relative pl-4">
               <span className="absolute left-0 top-2 w-1.5 h-1.5 rounded-full bg-red-800" />

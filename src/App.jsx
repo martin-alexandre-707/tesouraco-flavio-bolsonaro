@@ -288,6 +288,10 @@ export default function App() {
                     <ArrowDownCircle className="w-3 h-3" aria-hidden="true" />
                   </a>
                 </div>
+                <p className="mt-2 text-[10px] sm:text-[11px] text-stone-500 leading-relaxed">
+                  Base: DIEESE (51% transferências, 17% pessoal, 32% outras), IFI (R$ 78 bi livres) e Câmara
+                  (90,2% obrigatórios). Os limites são arredondamentos para R$ 250 bi.
+                </p>
               </div>
             </div>
           </div>
@@ -328,7 +332,7 @@ export default function App() {
               icon={Briefcase}
               iconClass="bg-amber-100 text-amber-800"
               sourceHref="https://istoedinheiro.com.br/equipe-de-flavio-estuda-corte-de-2-do-pib-em-despesas-diz-folha"
-              sourceTitle="Ver dados oficiais do BEPS/INSS e proposta de desvinculação relatada pela Folha/IstoÉ"
+              sourceTitle="Proposta de desvinculação (IstoÉ/Folha); o limite de R$ 100 bi é premissa calibrada por DIEESE/CDPP"
               sourceContent={
                 previdencia > 0
                   ? `Pode atingir ${Math.round((previdencia / SLIDER_LIMITS.previdencia) * 39)} milhões de beneficiários do INSS`
