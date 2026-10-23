@@ -380,7 +380,7 @@ export default function App() {
               id="slider-social"
               number={4}
               title="Programas Sociais (BPC)"
-              subtitle="Impacto no BPC. Sem os ganhos reais do salário mínimo, idosos em situação de pobreza e pessoas com deficiência severa (PcDs) terão sua renda achatada. A matemática do ajuste inviabiliza promessas de ampliação de redes de assistência e cuidado a pessoas atípicas."
+              subtitle="Impacto no BPC. O benefício custa cerca de R$ 130 bi/ano (1% do PIB) e atende 6,4 milhões de pessoas. Sem os ganhos reais do salário mínimo, idosos em situação de pobreza e pessoas com deficiência severa (PcDs) terão a renda achatada. A matemática do ajuste inviabiliza promessas de ampliação de redes de assistência e cuidado a pessoas atípicas. O valor de R$ 30 bi usado no cenário de fechamento é um corte, não o valor do benefício."
               value={social}
               max={SLIDER_LIMITS.social}
               step={10}
@@ -394,7 +394,7 @@ export default function App() {
               sourceContent={
                 social > 0
                   ? 'Revisão do BPC pode reduzir renda de famílias vulneráveis'
-                  : 'Premissa: R$ 50 bilhões (BPC)'
+                  : 'Premissa: R$ 50 bilhões (BPC real: ~R$ 130 bi/ano; 6,4 mi beneficiários)'
               }
               alert={
                 social > 30

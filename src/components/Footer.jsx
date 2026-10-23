@@ -64,8 +64,18 @@ export default function Footer() {
                   <span className="text-xs font-mono font-bold text-red-800">R$ 30 bi</span>
                 </div>
                 <p className="mt-1 text-[11px] sm:text-xs text-stone-600 leading-relaxed">
-                  Parte das transferências (100 + 30 = 130, próximo dos 128 do DIEESE). A divisão interna é a
-                  única premissa desta linha.
+                  O DIEESE informa apenas o bloco de 51% em transferências; a divisão 100/30 é premissa do
+                  simulador. O BPC real custa cerca de R$ 130 bi/ano (1% do PIB) e atende 6,4 milhões de pessoas —
+                  o corte de R$ 30 bi equivale a ~23% do benefício. Fonte:{' '}
+                  <a
+                    href="https://jc.uol.com.br/colunas/jc-negocios/2026/06/02/bpc-ja-custa-1-do-pib-e-ja-obriga-governo-a-contingenciar-despesas-de-varios-ministerios-depois-de-pacote-de-bondades-sem-caixa-disponivel.html"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="underline hover:text-stone-800"
+                  >
+                    JC, 2026
+                  </a>
+                  .
                 </p>
               </div>
 
