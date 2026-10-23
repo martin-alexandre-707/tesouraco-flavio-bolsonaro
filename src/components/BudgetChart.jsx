@@ -24,7 +24,7 @@ const legend = [
     color: 'bg-amber-500',
     label: 'Assistência Social',
     value: '~10%',
-    description: 'BPC (idosos e PcDs) e Bolsa Família.',
+    description: 'BPC e Bolsa Família (composição do orçamento).',
   },
   {
     color: 'bg-stone-500',

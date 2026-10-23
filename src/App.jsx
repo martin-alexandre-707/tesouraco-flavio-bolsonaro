@@ -302,7 +302,7 @@ export default function App() {
               id="slider-maquina"
               number={1}
               title="Funcionamento do País (Máquina Pública)"
-              subtitle="Dinheiro livre. O limite de 40 bi é uma premissa conservadora para o custeio (manutenção de estradas, passaportes e viaturas da PF) antes de causar um apagão total no país."
+              subtitle="Custeio da máquina: premissa conservadora de R$ 40 bi; a Câmara estima ~R$ 70 bi de custeio."
               value={maquina}
               max={SLIDER_LIMITS.maquina}
               step={5}
@@ -313,7 +313,7 @@ export default function App() {
               iconClass="bg-stone-200 text-stone-700"
               sourceHref="https://www.camara.leg.br/noticias/1151191-governo-podera-ter-dificuldade-com-custeio-da-maquina-publica-nos-proximos-anos/"
               sourceTitle="Câmara: custeio estimado em cerca de R$ 70 bi; o simulador usa um cenário conservador"
-              sourceContent="Custeio estimado: ~R$ 70 bi (cenário: R$ 40 bi)"
+              sourceContent="Custeio: ~R$ 70 bi (cenário: R$ 40 bi)"
               alert={maquinaAlert}
               ariaLabel="Corte no Funcionamento do País (Máquina Pública)"
             />
@@ -322,7 +322,7 @@ export default function App() {
               id="slider-previdencia"
               number={2}
               title="Previdência (INSS)"
-              subtitle="A desvinculação do salário mínimo. Se o benefício for corrigido apenas pela inflação geral (INPC), o idoso perde os ganhos reais anuais. Como a inflação de medicamentos e serviços de saúde tende a ser maior que a média, o aposentado perde poder de compra e empobrece ao longo dos anos."
+              subtitle="Desvincular do mínimo: o INPC preserva o valor real, mas não os ganhos reais do salário."
               value={previdencia}
               max={SLIDER_LIMITS.previdencia}
               step={10}
@@ -336,7 +336,7 @@ export default function App() {
               sourceContent={
                 previdencia > 0
                   ? `Pode atingir ${Math.round((previdencia / SLIDER_LIMITS.previdencia) * 39)} milhões de beneficiários do INSS`
-                  : 'Premissa: R$ 100 bilhões (cerca de 39 milhões de benefícios no INSS)'
+                  : 'Premissa: R$ 100 bi (39 mi de benefícios)'
               }
               alert={
                 previdencia > 30
@@ -350,7 +350,7 @@ export default function App() {
               id="slider-saude-educacao"
               number={3}
               title="Saúde e Educação (Fim dos Pisos)"
-              subtitle="A alteração dos pisos constitucionais. Na prática, estrangular o orçamento da Saúde significa menos remédios nos postos, aumento brutal no tempo de espera nas UPAs e atraso em cirurgias. Na Educação, o corte ameaça a manutenção de laboratórios, universidades e bolsas de pesquisa."
+              subtitle="Mudar os pisos: menos remédios, filas maiores e cirurgias atrasadas."
               value={saudeEducacao}
               max={SLIDER_LIMITS.saudeEducacao}
               step={10}
@@ -363,8 +363,8 @@ export default function App() {
               sourceTitle="Projeção Folha/InfoMoney sobre o fim dos pisos de Saúde e Educação"
               sourceContent={
                 saudeEducacao > 0
-                  ? 'Corte no repasse a hospitais, vacinas, merenda e Fundeb'
-                  : 'Premissa: R$ 80 bilhões (média de R$ 800 bi em 10 anos)'
+                  ? 'Corte em hospitais, vacinas, merenda e Fundeb'
+                  : 'Premissa: R$ 80 bi (média de R$ 800 bi/10 anos)'
               }
               alert={
                 saudeEducacao > 50
@@ -380,7 +380,7 @@ export default function App() {
               id="slider-social"
               number={4}
               title="Programas Sociais (BPC)"
-              subtitle="Impacto no BPC. O benefício custa cerca de R$ 130 bi/ano (1% do PIB) e atende 6,4 milhões de pessoas. Sem os ganhos reais do salário mínimo, idosos em situação de pobreza e pessoas com deficiência severa (PcDs) terão a renda achatada. A matemática do ajuste inviabiliza promessas de ampliação de redes de assistência e cuidado a pessoas atípicas. O valor de R$ 30 bi usado no cenário de fechamento é um corte, não o valor do benefício."
+              subtitle="BPC: ~R$ 130 bi/ano e 6,4 milhões de beneficiários; o corte de R$ 30 bi é cenário."
               value={social}
               max={SLIDER_LIMITS.social}
               step={10}
@@ -393,8 +393,8 @@ export default function App() {
               sourceTitle="Estudo DIEESE: 51% do corte recai sobre transferências de renda"
               sourceContent={
                 social > 0
-                  ? 'Revisão do BPC pode reduzir renda de famílias vulneráveis'
-                  : 'Premissa: R$ 50 bilhões (BPC real: ~R$ 130 bi/ano; 6,4 mi beneficiários)'
+                  ? 'Revisão pode reduzir renda de famílias vulneráveis'
+                  : 'Premissa: R$ 50 bi • BPC real: ~R$ 130 bi/ano'
               }
               alert={
                 social > 30
@@ -555,6 +555,52 @@ export default function App() {
               O simulador demonstra que prometer proteger a saúde, a educação e a aposentadoria enquanto se aplica
               um corte dessa magnitude é uma equação que não se sustenta na realidade do Orçamento Federal.
             </p>
+          </div>
+
+          <div className="mt-6">
+            <h3 className="text-sm sm:text-base font-bold text-stone-900 mb-3">
+              O que está em jogo em cada corte
+            </h3>
+            <div className="grid md:grid-cols-3 gap-3 sm:gap-4">
+              <article className="bg-stone-50 border border-stone-300 rounded-xl p-4">
+                <span className="text-[10px] font-mono uppercase tracking-wider text-red-800 font-bold">
+                  Previdência
+                </span>
+                <h4 className="text-sm font-bold text-stone-800 mt-1 mb-2">Perda de poder de compra</h4>
+                <p className="text-xs sm:text-sm text-stone-600 leading-relaxed">
+                  A desvinculação do salário mínimo. Se o benefício for corrigido apenas pela inflação geral
+                  (INPC), o idoso perde os ganhos reais anuais. Como a inflação de medicamentos e serviços de
+                  saúde tende a ser maior que a média, o aposentado perde poder de compra e empobrece ao longo
+                  dos anos.
+                </p>
+              </article>
+
+              <article className="bg-stone-50 border border-stone-300 rounded-xl p-4">
+                <span className="text-[10px] font-mono uppercase tracking-wider text-red-800 font-bold">
+                  BPC
+                </span>
+                <h4 className="text-sm font-bold text-stone-800 mt-1 mb-2">Renda achatada</h4>
+                <p className="text-xs sm:text-sm text-stone-600 leading-relaxed">
+                  O BPC custa cerca de R$ 130 bi/ano (1% do PIB) e atende 6,4 milhões de pessoas. Sem os ganhos
+                  reais do salário mínimo, idosos em situação de pobreza e PcDs terão a renda achatada. A
+                  matemática do ajuste inviabiliza promessas de ampliação de redes de assistência e cuidado a
+                  pessoas atípicas. O valor de R$ 30 bi usado no cenário de fechamento é um corte, não o valor
+                  do benefício.
+                </p>
+              </article>
+
+              <article className="bg-stone-50 border border-stone-300 rounded-xl p-4">
+                <span className="text-[10px] font-mono uppercase tracking-wider text-red-800 font-bold">
+                  Saúde e Educação
+                </span>
+                <h4 className="text-sm font-bold text-stone-800 mt-1 mb-2">Serviços sob pressão</h4>
+                <p className="text-xs sm:text-sm text-stone-600 leading-relaxed">
+                  A alteração dos pisos constitucionais. Na prática, estrangular o orçamento da Saúde significa
+                  menos remédios nos postos, aumento brutal no tempo de espera nas UPAs e atraso em cirurgias.
+                  Na Educação, o corte ameaça a manutenção de laboratórios, universidades e bolsas de pesquisa.
+                </p>
+              </article>
+            </div>
           </div>
         </section>
 
