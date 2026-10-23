@@ -15,35 +15,39 @@ import {
   Users,
   Briefcase,
   ArrowDownCircle,
-  ArrowUp,
-  Scale,
-  FileSpreadsheet,
-  Plus,
-  Minus
+  Scale
 } from 'lucide-react';
+import Header from './components/Header';
+import BudgetChart from './components/BudgetChart';
+import SliderCard from './components/SliderCard';
+import Footer from './components/Footer';
+import {
+  META_CORTE,
+  SLIDER_LIMITS,
+  SCENARIOS,
+  clampCut,
+  sumCuts,
+  calculateMetaPercent,
+} from './lib/budget';
+import heroImage from './assets/image_304b62.webp';
+import mileiImage from './assets/milei_motosserra.webp';
 
 export default function App() {
   // Estado dos 4 sliders de cortes orçamentários (em bilhões de R$)
-  const [maquina, setMaquina] = useState(0); // Máx: 40
-  const [previdencia, setPrevidencia] = useState(0); // Máx: 100
-  const [saudeEducacao, setSaudeEducacao] = useState(0); // Máx: 80
-  const [social, setSocial] = useState(0); // Máx: 50
-  const [imageError, setImageError] = useState(false);
+  const [maquina, setMaquina] = useState(0);
+  const [previdencia, setPrevidencia] = useState(0);
+  const [saudeEducacao, setSaudeEducacao] = useState(0);
+  const [social, setSocial] = useState(0);
   const [isScrolled, setIsScrolled] = useState(false);
 
-  // Meta global proposta pela campanha
-  const META_CORTE = 250;
-
-  // Total acumulado cortado
-  const totalCortado = maquina + previdencia + saudeEducacao + social;
+  const totalCortado = sumCuts({ maquina, previdencia, saudeEducacao, social });
   const faltam = Math.max(0, META_CORTE - totalCortado);
-  const percentualMeta = Math.min(100, Math.round((totalCortado / META_CORTE) * 100));
+  const percentualMeta = calculateMetaPercent(totalCortado);
   const metaAtingida = totalCortado >= META_CORTE;
 
   // Monitora a rolagem: só exibe a barra no topo quando o usuário descer a página
   useEffect(() => {
     const handleScroll = () => {
-      // Quando rolar além do simulador (mais de 450px), a barra desce no topo
       if (window.scrollY > 450) {
         setIsScrolled(true);
       } else {
@@ -54,7 +58,6 @@ export default function App() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Rola suavemente de volta até o simulador
   const scrollToSimulador = () => {
     const el = document.getElementById('simulador');
     if (el) {
@@ -62,24 +65,22 @@ export default function App() {
     }
   };
 
-  // Funções de ajuste fino (+ / -) para facilitar o uso no celular
   const alterarValor = (setter, valorAtual, delta, max) => {
-    setter(Math.min(max, Math.max(0, valorAtual + delta)));
+    setter(clampCut(valorAtual + delta, max));
   };
 
-  // Cenários rápidos para simulação
   const aplicarCenarioApenasMaquina = () => {
-    setMaquina(40);
-    setPrevidencia(0);
-    setSaudeEducacao(0);
-    setSocial(0);
+    setMaquina(SCENARIOS.apenasMaquina.maquina);
+    setPrevidencia(SCENARIOS.apenasMaquina.previdencia);
+    setSaudeEducacao(SCENARIOS.apenasMaquina.saudeEducacao);
+    setSocial(SCENARIOS.apenasMaquina.social);
   };
 
   const aplicarCenarioFecharConta = () => {
-    setMaquina(40);
-    setPrevidencia(100);
-    setSaudeEducacao(80);
-    setSocial(30);
+    setMaquina(SCENARIOS.fecharConta.maquina);
+    setPrevidencia(SCENARIOS.fecharConta.previdencia);
+    setSaudeEducacao(SCENARIOS.fecharConta.saudeEducacao);
+    setSocial(SCENARIOS.fecharConta.social);
   };
 
   const zerarSimulador = () => {
@@ -89,128 +90,47 @@ export default function App() {
     setSocial(0);
   };
 
+  const alertLine = (text) => (
+    <p className="text-xs font-semibold text-red-700 flex items-center gap-1.5">
+      <ShieldAlert className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
+      <span>{text}</span>
+    </p>
+  );
+
+  const maquinaAlert =
+    maquina === SLIDER_LIMITS.maquina ? (
+      <div className="p-3 bg-red-50 border border-red-300 rounded-lg text-xs font-semibold text-red-900 flex items-start gap-2">
+        <ShieldAlert className="w-4 h-4 text-red-700 shrink-0 mt-0.5" aria-hidden="true" />
+        <span>
+          <strong>Alerta:</strong>{' '}
+          {metaAtingida
+            ? 'Você esvaziou a máquina pública — e mesmo assim precisou avançar sobre Previdência, Saúde e benefícios sociais para fechar a conta.'
+            : `Você causou um apagão na máquina pública e ainda faltam R$ ${faltam} bilhões.`}
+        </span>
+      </div>
+    ) : null;
+
   return (
     <div className="min-h-screen bg-[#faf8f5] text-stone-900 font-sans selection:bg-red-900 selection:text-white overflow-x-hidden">
-      {/* ========================================================================= */}
-      {/* 1. BARRA DE TOPO ORIGINAL (Exibida normalmente quando abre a página)       */}
-      {/* ========================================================================= */}
-      <header className="border-b border-stone-200 bg-white/80 backdrop-blur-md sticky top-0 z-40">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className="p-1.5 bg-red-800 text-white rounded">
-              <Scissors className="w-4 h-4" />
-            </span>
-            <span className="text-xs uppercase tracking-widest font-bold text-stone-700">
-              Dossiê Especial • Orçamento & Eleições
-            </span>
-          </div>
-
-          <nav className="hidden sm:flex items-center gap-6 text-xs text-stone-600 font-medium">
-            <a href="#simulador" className="hover:text-red-800 transition">O Simulador</a>
-            <a href="#tesouraco" className="hover:text-red-800 transition">O Tesouraço</a>
-            <a href="#argentina" className="hover:text-red-800 transition">O Espelho Argentino</a>
-            <a href="#fontes" className="hover:text-red-800 transition">Fontes Oficiais</a>
-          </nav>
-        </div>
-      </header>
-
-      {/* ========================================================================= */}
-      {/* 2. BARRA DESLIZANTE DA META: Aparece descendo no topo ao rolar a página    */}
-      {/* ========================================================================= */}
-      <div
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ease-out transform ${
-          isScrolled
-            ? 'translate-y-0 opacity-100 shadow-2xl pointer-events-auto'
-            : '-translate-y-full opacity-0 pointer-events-none'
-        } bg-stone-900/95 text-stone-100 backdrop-blur-md border-b border-stone-800`}
+      <a
+        href="#conteudo"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[60] focus:px-3 focus:py-2 focus:bg-white focus:text-red-800 focus:rounded focus:shadow-lg focus:font-semibold"
       >
-        <div className="max-w-6xl mx-auto px-3 sm:px-6 py-2.5 flex items-center justify-between gap-3">
-          {/* Lado Esquerdo: Meta dos 250 bi */}
-          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-            <span className="p-1.5 bg-red-700 text-white rounded">
-              <Scissors className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-            </span>
-            <div className="flex flex-col">
-              <span className="text-[10px] uppercase tracking-wider text-red-400 font-bold">
-                Meta do Tesouraço
-              </span>
-              <span className="text-xs sm:text-sm font-bold font-serif leading-none text-white">
-                R$ 250 bilhões
-              </span>
-            </div>
-          </div>
-
-          {/* Centro: Barra de Progresso e Valor Cortado em Tempo Real */}
-          <div className="flex items-center gap-2 sm:gap-4 flex-1 max-w-xs sm:max-w-md justify-center">
-            <div className="w-full">
-              <div className="flex justify-between items-center text-[10px] sm:text-xs mb-1 font-mono">
-                <span className="text-stone-300 truncate">
-                  Cortado: <strong className="text-white font-bold">R$ {totalCortado} bi</strong>
-                </span>
-                <span className="text-stone-400 ml-1">
-                  {percentualMeta}%
-                </span>
-              </div>
-              <div className="w-full bg-stone-800 rounded-full h-2 sm:h-2.5 overflow-hidden border border-stone-700">
-                <div
-                  className={`h-full transition-all duration-300 ${
-                    metaAtingida
-                      ? 'bg-emerald-500'
-                      : totalCortado > 150
-                      ? 'bg-amber-500'
-                      : 'bg-red-700'
-                  }`}
-                  style={{ width: `${percentualMeta}%` }}
-                />
-              </div>
-            </div>
-
-            {/* Badge de Status (Desktop / Tablet) */}
-            <div className="hidden md:block shrink-0">
-              {metaAtingida ? (
-                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-950 text-emerald-300 border border-emerald-600/60 font-bold text-[11px]">
-                  <CheckCircle2 className="w-3.5 h-3.5" /> Meta batida!
-                </span>
-              ) : (
-                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-red-950 text-red-300 border border-red-700/60 font-bold text-[11px] font-mono">
-                  Faltam R$ {faltam} bi
-                </span>
-              )}
-            </div>
-          </div>
-
-          {/* Lado Direito: Botão para Voltar ao Simulador */}
-          <div className="flex items-center gap-2 shrink-0">
-            <button
-              onClick={scrollToSimulador}
-              className="px-2.5 sm:px-3 py-1.5 bg-red-800 hover:bg-red-700 active:bg-red-900 text-white rounded-lg text-xs font-semibold flex items-center gap-1 transition cursor-pointer shadow-sm"
-              title="Voltar ao simulador para ajustar valores"
-            >
-              <span>Ajustar cortes</span>
-              <ArrowUp className="w-3.5 h-3.5" />
-            </button>
-          </div>
-        </div>
-
-        {/* Linha Contínua de Progresso na Borda Inferior da Barra */}
-        <div className="w-full bg-stone-800 h-[3px] overflow-hidden">
-          <div
-            className={`h-full transition-all duration-300 ${
-              metaAtingida
-                ? 'bg-emerald-500'
-                : totalCortado > 150
-                ? 'bg-amber-500'
-                : 'bg-red-700'
-            }`}
-            style={{ width: `${percentualMeta}%` }}
-          />
-        </div>
-      </div>
-
+        Ir para o conteúdo
+      </a>
+      <Header
+        totalCortado={totalCortado}
+        metaAtingida={metaAtingida}
+        faltam={faltam}
+        percentualMeta={percentualMeta}
+        isScrolled={isScrolled}
+        onScrollToSimulator={scrollToSimulador}
+      />
+      <main id="conteudo">
       {/* ========================================================================= */}
       {/* SEÇÃO 1: O Simulador (Hero Section - O Gancho Técnico)                    */}
       {/* ========================================================================= */}
-      <section id="simulador" className="pt-8 sm:pt-12 pb-16 sm:pb-20 px-3 sm:px-6 max-w-5xl mx-auto">
+      <section id="simulador" className="scroll-mt-20 pt-8 sm:pt-12 pb-16 sm:pb-20 px-3 sm:px-6 max-w-5xl mx-auto">
         {/* Cabeçalho Hero */}
         <div className="text-center max-w-3xl mx-auto mb-8 sm:mb-10">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-100 text-red-900 text-[11px] sm:text-xs font-semibold mb-3 sm:mb-4 border border-red-200">
@@ -277,7 +197,15 @@ export default function App() {
             </div>
 
             {/* Barra de Progresso Visual */}
-            <div className="w-full bg-stone-200 rounded-full h-5 sm:h-6 overflow-hidden p-0.5 relative shadow-inner">
+            <div
+              className="w-full bg-stone-200 rounded-full h-5 sm:h-6 overflow-hidden p-0.5 relative shadow-inner"
+              role="progressbar"
+              aria-label="Progresso do corte em relação à meta de 250 bilhões"
+              aria-valuemin={0}
+              aria-valuemax={100}
+              aria-valuenow={percentualMeta}
+              aria-valuetext={`${totalCortado} de ${META_CORTE} bilhões cortados`}
+            >
               <div
                 className={`h-full rounded-full transition-all duration-300 ${
                   metaAtingida
@@ -287,14 +215,15 @@ export default function App() {
                     : 'bg-red-800'
                 }`}
                 style={{ width: `${percentualMeta}%` }}
+                aria-hidden="true"
               />
             </div>
 
             {/* Marcadores de Referência */}
             <div className="flex justify-between text-[10px] sm:text-[11px] text-stone-500 mt-2 font-mono">
-              <span>R$ 0 bi</span>
-              <span className="text-stone-400">R$ 100 bi</span>
-              <span className="text-stone-400">R$ 200 bi</span>
+              <span>R$ 0</span>
+              <span className="text-stone-500">R$ 100 bi</span>
+              <span className="text-stone-500">R$ 200 bi</span>
               <span className="font-bold text-stone-800">Meta: R$ 250 bi</span>
             </div>
           </div>
@@ -310,13 +239,13 @@ export default function App() {
                 onClick={aplicarCenarioApenasMaquina}
                 className="flex-1 sm:flex-initial px-3 py-2 bg-stone-100 hover:bg-stone-200 active:bg-stone-300 text-stone-800 rounded-lg border border-stone-300 font-medium transition cursor-pointer text-center text-xs"
               >
-                Apenas Máquina (R$ 40 bi)
+                Apenas Máquina (R$ 40 bilhões)
               </button>
               <button
                 onClick={aplicarCenarioFecharConta}
                 className="flex-1 sm:flex-initial px-3 py-2 bg-red-50 hover:bg-red-100 active:bg-red-200 text-red-900 rounded-lg border border-red-300 font-medium transition cursor-pointer text-center text-xs"
               >
-                Como fechar os 250 bi?
+                Como fechar os R$ 250 bilhões?
               </button>
               <button
                 onClick={zerarSimulador}
@@ -327,328 +256,119 @@ export default function App() {
             </div>
           </div>
 
+          <BudgetChart />
+
           {/* Os 4 Sliders Controlados por Estado com botões táteis responsivos */}
           <div className="space-y-6 sm:space-y-8">
-            {/* 1. Máquina Pública / Desperdício */}
-            <div className="p-4 sm:p-5 rounded-xl border border-stone-200 bg-stone-50/70 hover:bg-stone-50 transition">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
-                <div className="flex items-center gap-2.5">
-                  <div className="p-2 bg-stone-200 rounded-lg text-stone-700 shrink-0">
-                    <Building2 className="w-4 h-4 sm:w-5 sm:h-5" />
-                  </div>
-                  <div>
-                    <h2 className="font-bold text-stone-900 text-sm sm:text-base">
-                      1. Máquina Pública / Desperdício
-                    </h2>
-                    <p className="text-[11px] sm:text-xs text-stone-500 leading-tight">
-                      Gastos discricionários de custeio, viagens, diárias e material de ministérios (estimativa).
-                    </p>
-                  </div>
-                </div>
+            <SliderCard
+              id="slider-maquina"
+              number={1}
+              title="Funcionamento do País (Máquina Pública)"
+              subtitle="Dinheiro livre. O limite de 40 bi é o máximo que dá para cortar (secar manutenção de estradas, emissão de passaportes e viaturas da Polícia Federal) antes de causar um apagão total no país."
+              value={maquina}
+              max={SLIDER_LIMITS.maquina}
+              step={5}
+              onChange={setMaquina}
+              onDecrease={() => alterarValor(setMaquina, maquina, -5, SLIDER_LIMITS.maquina)}
+              onIncrease={() => alterarValor(setMaquina, maquina, 5, SLIDER_LIMITS.maquina)}
+              icon={Building2}
+              iconClass="bg-stone-200 text-stone-700"
+              sourceHref="https://www.camara.leg.br/radio/radioagencia/1151197-governo-podera-ter-dificuldade-com-custeio-da-maquina-publica-nos-proximos-anos"
+              sourceTitle="Entenda o custeio da máquina pública (Câmara dos Deputados)"
+              sourceContent="Custeio administrativo estimado: até R$ 40 bilhões"
+              alert={maquinaAlert}
+              ariaLabel="Corte no Funcionamento do País (Máquina Pública)"
+            />
 
-                <div className="flex items-center justify-between sm:justify-end gap-3 font-mono">
-                  <div className="flex items-center gap-1">
-                    <button
-                      onClick={() => alterarValor(setMaquina, maquina, -5, 40)}
-                      className="w-7 h-7 rounded bg-white border border-stone-300 hover:bg-stone-100 active:bg-stone-200 text-stone-700 flex items-center justify-center font-bold text-xs cursor-pointer"
-                      title="Diminuir 5 bi"
-                    >
-                      <Minus className="w-3.5 h-3.5" />
-                    </button>
-                    <button
-                      onClick={() => alterarValor(setMaquina, maquina, 5, 40)}
-                      className="w-7 h-7 rounded bg-white border border-stone-300 hover:bg-stone-100 active:bg-stone-200 text-stone-700 flex items-center justify-center font-bold text-xs cursor-pointer"
-                      title="Aumentar 5 bi"
-                    >
-                      <Plus className="w-3.5 h-3.5" />
-                    </button>
-                  </div>
-                  <div>
-                    <span className="text-xl sm:text-2xl font-bold text-stone-900">R$ {maquina}</span>
-                    <span className="text-xs text-stone-500"> / máx 40 bi</span>
-                  </div>
-                </div>
-              </div>
+            <SliderCard
+              id="slider-previdencia"
+              number={2}
+              title="Previdência (INSS)"
+              subtitle="Economia gerada ao desvincular a aposentadoria do salário mínimo. O idoso recebe apenas a inflação e perde poder de compra ano após ano para o governo poupar até 100 bi."
+              value={previdencia}
+              max={SLIDER_LIMITS.previdencia}
+              step={10}
+              onChange={setPrevidencia}
+              onDecrease={() => alterarValor(setPrevidencia, previdencia, -10, SLIDER_LIMITS.previdencia)}
+              onIncrease={() => alterarValor(setPrevidencia, previdencia, 10, SLIDER_LIMITS.previdencia)}
+              icon={Briefcase}
+              iconClass="bg-amber-100 text-amber-800"
+              sourceHref="https://istoedinheiro.com.br/equipe-de-flavio-estuda-corte-de-2-do-pib-em-despesas-diz-folha"
+              sourceTitle="Ver dados oficiais do BEPS/INSS e proposta de desvinculação relatada pela Folha/IstoÉ"
+              sourceContent={
+                previdencia > 0
+                  ? `Pode atingir ${Math.round((previdencia / SLIDER_LIMITS.previdencia) * 39)} milhões de beneficiários do INSS`
+                  : 'Máximo: R$ 100 bilhões (cerca de 39 milhões de benefícios no INSS)'
+              }
+              alert={
+                previdencia > 30
+                  ? alertLine('Risco de congelamento das aposentadorias e desvinculação do salário mínimo.')
+                  : null
+              }
+              ariaLabel="Corte na Previdência (INSS)"
+            />
 
-              <input
-                type="range"
-                min="0"
-                max="40"
-                step="1"
-                value={maquina}
-                onChange={(e) => setMaquina(Number(e.target.value))}
-                className="w-full h-3 bg-stone-200 rounded-lg appearance-none cursor-pointer accent-red-800"
-              />
+            <SliderCard
+              id="slider-saude-educacao"
+              number={3}
+              title="Saúde e Educação (Fim dos Pisos)"
+              subtitle="Dinheiro retido ao rasgar a lei que obriga um investimento mínimo nessas áreas. O limite de 80 bi é o que tirariam diretamente de hospitais, vacinas e merenda escolar (Fundeb)."
+              value={saudeEducacao}
+              max={SLIDER_LIMITS.saudeEducacao}
+              step={10}
+              onChange={setSaudeEducacao}
+              onDecrease={() => alterarValor(setSaudeEducacao, saudeEducacao, -10, SLIDER_LIMITS.saudeEducacao)}
+              onIncrease={() => alterarValor(setSaudeEducacao, saudeEducacao, 10, SLIDER_LIMITS.saudeEducacao)}
+              icon={HeartPulse}
+              iconClass="bg-rose-100 text-rose-800"
+              sourceHref="https://www.cnnbrasil.com.br/economia/macroeconomia/despesas-obrigatorias-estao-encurralando-capacidade-de-investimento-diz-diretor-do-ifi-ao-ww/"
+              sourceTitle="Ver análise do IFI sobre pisos constitucionais de Saúde e Educação"
+              sourceContent={
+                saudeEducacao > 0
+                  ? 'Corte no repasse a hospitais, vacinas, merenda e Fundeb'
+                  : 'Máximo: R$ 80 bilhões (Fim dos Pisos da Saúde e Educação)'
+              }
+              alert={
+                saudeEducacao > 50
+                  ? alertLine('Risco de colapso no SUS, com fechamento de leitos e falta de merenda escolar.')
+                  : saudeEducacao > 20
+                  ? alertLine('Risco de falta de dinheiro para o SAMU e a Farmácia Popular.')
+                  : null
+              }
+              ariaLabel="Corte na Saúde e Educação (Fim dos Pisos)"
+            />
 
-              {/* Regra de UI Obrigatória: Se colocar no 40, exibir o alerta */}
-              {maquina === 40 ? (
-                <div className="mt-3 p-3 bg-red-50 border border-red-300 rounded-lg text-xs font-semibold text-red-900 flex items-start gap-2 animate-pulse">
-                  <ShieldAlert className="w-4 h-4 text-red-700 shrink-0 mt-0.5" />
-                  <span>
-                    <strong>Alerta:</strong>{' '}
-                    {metaAtingida
-                      ? 'Você esvaziou a máquina pública — e mesmo assim precisou avançar sobre Previdência, Saúde e benefícios sociais para fechar a conta.'
-                      : `Você causou um apagão na máquina pública e ainda faltam R$ ${faltam} bi.`}
-                  </span>
-                </div>
-              ) : (
-                <div className="flex justify-between items-center text-[10px] sm:text-[11px] text-stone-400 mt-1 font-mono">
-                  <span>R$ 0 bi</span>
-                  <a
-                    href="https://www.camara.leg.br/radio/radioagencia/1151197-governo-podera-ter-dificuldade-com-custeio-da-maquina-publica-nos-proximos-anos"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-stone-500 hover:text-red-800 underline inline-flex items-center gap-0.5"
-                    title="Entenda o custeio da máquina pública (Câmara dos Deputados)"
-                  >
-                    <span>Custeio administrativo estimado: até R$ 40 bi</span>
-                    <ExternalLink className="w-2.5 h-2.5" />
-                  </a>
-                </div>
-              )}
-            </div>
-
-            {/* 2. Previdência / Aposentadorias */}
-            <div className="p-4 sm:p-5 rounded-xl border border-stone-200 bg-stone-50/70 hover:bg-stone-50 transition">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
-                <div className="flex items-center gap-2.5">
-                  <div className="p-2 bg-amber-100 rounded-lg text-amber-800 shrink-0">
-                    <Briefcase className="w-4 h-4 sm:w-5 sm:h-5" />
-                  </div>
-                  <div>
-                    <h2 className="font-bold text-stone-900 text-sm sm:text-base">
-                      2. Previdência / Aposentadorias
-                    </h2>
-                    <p className="text-[11px] sm:text-xs text-stone-500 leading-tight">
-                      Desvinculação do salário mínimo, corte de pensões e adiamento de aposentadorias do INSS.
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-center justify-between sm:justify-end gap-3 font-mono">
-                  <div className="flex items-center gap-1">
-                    <button
-                      onClick={() => alterarValor(setPrevidencia, previdencia, -10, 100)}
-                      className="w-7 h-7 rounded bg-white border border-stone-300 hover:bg-stone-100 active:bg-stone-200 text-stone-700 flex items-center justify-center font-bold text-xs cursor-pointer"
-                      title="Diminuir 10 bi"
-                    >
-                      <Minus className="w-3.5 h-3.5" />
-                    </button>
-                    <button
-                      onClick={() => alterarValor(setPrevidencia, previdencia, 10, 100)}
-                      className="w-7 h-7 rounded bg-white border border-stone-300 hover:bg-stone-100 active:bg-stone-200 text-stone-700 flex items-center justify-center font-bold text-xs cursor-pointer"
-                      title="Aumentar 10 bi"
-                    >
-                      <Plus className="w-3.5 h-3.5" />
-                    </button>
-                  </div>
-                  <div>
-                    <span className="text-xl sm:text-2xl font-bold text-stone-900">R$ {previdencia}</span>
-                    <span className="text-xs text-stone-500"> / máx 100 bi</span>
-                  </div>
-                </div>
-              </div>
-
-              <input
-                type="range"
-                min="0"
-                max="100"
-                step="1"
-                value={previdencia}
-                onChange={(e) => setPrevidencia(Number(e.target.value))}
-                className="w-full h-3 bg-stone-200 rounded-lg appearance-none cursor-pointer accent-red-800"
-              />
-
-              <div className="flex justify-between items-center text-[10px] sm:text-[11px] text-stone-400 mt-1 font-mono">
-                <span>R$ 0 bi</span>
-                <a
-                  href="https://istoedinheiro.com.br/equipe-de-flavio-estuda-corte-de-2-do-pib-em-despesas-diz-folha"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-stone-600 hover:text-red-800 underline inline-flex items-center gap-0.5 truncate max-w-[260px] sm:max-w-none"
-                  title="Ver dados oficiais do BEPS/INSS e proposta de desvinculação relatada pela Folha/IstoÉ"
-                >
-                  <span>
-                    {previdencia > 0
-                      ? `Pode atingir ${Math.round((previdencia / 100) * 39)} milhões de beneficiários do INSS`
-                      : 'Máximo: R$ 100 bi (cerca de 39 milhões de benefícios no INSS)'}
-                  </span>
-                  <ExternalLink className="w-2.5 h-2.5 shrink-0" />
-                </a>
-              </div>
-              {/* Aviso dinâmico Previdência */}
-              {previdencia > 30 && (
-                <p className="mt-2 text-xs font-semibold text-red-700 flex items-center gap-1.5">
-                  <ShieldAlert className="w-3.5 h-3.5 shrink-0" />
-                  Risco de congelamento das aposentadorias e desvinculação do salário mínimo.
-                </p>
-              )}
-            </div>
-
-            {/* 3. Saúde e Educação / Fim dos Pisos */}
-            <div className="p-4 sm:p-5 rounded-xl border border-stone-200 bg-stone-50/70 hover:bg-stone-50 transition">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
-                <div className="flex items-center gap-2.5">
-                  <div className="p-2 bg-rose-100 rounded-lg text-rose-800 shrink-0">
-                    <HeartPulse className="w-4 h-4 sm:w-5 sm:h-5" />
-                  </div>
-                  <div>
-                    <h2 className="font-bold text-stone-900 text-sm sm:text-base">
-                      3. Saúde e Educação / Fim dos Pisos
-                    </h2>
-                    <p className="text-[11px] sm:text-xs text-stone-500 leading-tight">
-                      Fim da obrigatoriedade constitucional de recursos mínimos para postos, remédios e escolas.
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-center justify-between sm:justify-end gap-3 font-mono">
-                  <div className="flex items-center gap-1">
-                    <button
-                      onClick={() => alterarValor(setSaudeEducacao, saudeEducacao, -10, 80)}
-                      className="w-7 h-7 rounded bg-white border border-stone-300 hover:bg-stone-100 active:bg-stone-200 text-stone-700 flex items-center justify-center font-bold text-xs cursor-pointer"
-                      title="Diminuir 10 bi"
-                    >
-                      <Minus className="w-3.5 h-3.5" />
-                    </button>
-                    <button
-                      onClick={() => alterarValor(setSaudeEducacao, saudeEducacao, 10, 80)}
-                      className="w-7 h-7 rounded bg-white border border-stone-300 hover:bg-stone-100 active:bg-stone-200 text-stone-700 flex items-center justify-center font-bold text-xs cursor-pointer"
-                      title="Aumentar 10 bi"
-                    >
-                      <Plus className="w-3.5 h-3.5" />
-                    </button>
-                  </div>
-                  <div>
-                    <span className="text-xl sm:text-2xl font-bold text-stone-900">R$ {saudeEducacao}</span>
-                    <span className="text-xs text-stone-500"> / máx 80 bi</span>
-                  </div>
-                </div>
-              </div>
-
-              <input
-                type="range"
-                min="0"
-                max="80"
-                step="1"
-                value={saudeEducacao}
-                onChange={(e) => setSaudeEducacao(Number(e.target.value))}
-                className="w-full h-3 bg-stone-200 rounded-lg appearance-none cursor-pointer accent-red-800"
-              />
-
-              <div className="flex justify-between items-center text-[10px] sm:text-[11px] text-stone-400 mt-1 font-mono">
-                <span>R$ 0 bi</span>
-                <a
-                  href="https://www.cnnbrasil.com.br/economia/macroeconomia/despesas-obrigatorias-estao-encurralando-capacidade-de-investimento-diz-diretor-do-ifi-ao-ww/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-stone-600 hover:text-red-800 underline inline-flex items-center gap-0.5 truncate max-w-[260px] sm:max-w-none"
-                  title="Ver análise do IFI sobre pisos constitucionais de Saúde e Educação"
-                >
-                  <span>
-                    {saudeEducacao > 0
-                      ? `Corte no repasse a hospitais, vacinas, merenda e Fundeb`
-                      : 'Máximo: R$ 80 bi (Fim dos Pisos da Saúde e Educação)'}
-                  </span>
-                  <ExternalLink className="w-2.5 h-2.5 shrink-0" />
-                </a>
-              </div>
-              {/* Aviso dinâmico Saúde e Educação */}
-              {saudeEducacao > 50 ? (
-                <p className="mt-2 text-xs font-semibold text-red-700 flex items-center gap-1.5">
-                  <ShieldAlert className="w-3.5 h-3.5 shrink-0" />
-                  Risco de colapso no SUS, com fechamento de leitos e falta de merenda escolar.
-                </p>
-              ) : saudeEducacao > 20 ? (
-                <p className="mt-2 text-xs font-semibold text-red-700 flex items-center gap-1.5">
-                  <ShieldAlert className="w-3.5 h-3.5 shrink-0" />
-                  Risco de falta de dinheiro para o SAMU e a Farmácia Popular.
-                </p>
-              ) : null}
-            </div>
-
-            {/* 4. Programas Sociais / BPC */}
-            <div className="p-4 sm:p-5 rounded-xl border border-stone-200 bg-stone-50/70 hover:bg-stone-50 transition">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
-                <div className="flex items-center gap-2.5">
-                  <div className="p-2 bg-purple-100 rounded-lg text-purple-800 shrink-0">
-                    <Users className="w-4 h-4 sm:w-5 sm:h-5" />
-                  </div>
-                  <div>
-                    <h2 className="font-bold text-stone-900 text-sm sm:text-base">
-                      4. Programas Sociais / BPC
-                    </h2>
-                    <p className="text-[11px] sm:text-xs text-stone-500 leading-tight">
-                      Desvincular o Benefício de Prestação Continuada de idosos em vulnerabilidade e PcD.
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-center justify-between sm:justify-end gap-3 font-mono">
-                  <div className="flex items-center gap-1">
-                    <button
-                      onClick={() => alterarValor(setSocial, social, -10, 50)}
-                      className="w-7 h-7 rounded bg-white border border-stone-300 hover:bg-stone-100 active:bg-stone-200 text-stone-700 flex items-center justify-center font-bold text-xs cursor-pointer"
-                      title="Diminuir 10 bi"
-                    >
-                      <Minus className="w-3.5 h-3.5" />
-                    </button>
-                    <button
-                      onClick={() => alterarValor(setSocial, social, 10, 50)}
-                      className="w-7 h-7 rounded bg-white border border-stone-300 hover:bg-stone-100 active:bg-stone-200 text-stone-700 flex items-center justify-center font-bold text-xs cursor-pointer"
-                      title="Aumentar 10 bi"
-                    >
-                      <Plus className="w-3.5 h-3.5" />
-                    </button>
-                  </div>
-                  <div>
-                    <span className="text-xl sm:text-2xl font-bold text-stone-900">R$ {social}</span>
-                    <span className="text-xs text-stone-500"> / máx 50 bi</span>
-                  </div>
-                </div>
-              </div>
-
-              <input
-                type="range"
-                min="0"
-                max="50"
-                step="1"
-                value={social}
-                onChange={(e) => setSocial(Number(e.target.value))}
-                className="w-full h-3 bg-stone-200 rounded-lg appearance-none cursor-pointer accent-red-800"
-              />
-
-              <div className="flex justify-between items-center text-[10px] sm:text-[11px] text-stone-400 mt-1 font-mono">
-                <span>R$ 0 bi</span>
-                <a
-                  href="https://spbancarios.com.br/10/2026/nao-sou-mae-dinah-diz-daniella-marques-sobre-tesouraco-proposto-por-flavio-bolsonaro"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-stone-600 hover:text-red-800 underline inline-flex items-center gap-0.5 truncate max-w-[260px] sm:max-w-none"
-                  title="Ver reportagem sobre o plano de corte de despesas sociais e BPC"
-                >
-                  <span>
-                    {social > 0
-                      ? `Perda de renda básica de famílias abaixo da linha de pobreza`
-                      : 'Máximo: R$ 50 bi (Desvinculação do BPC)'}
-                  </span>
-                  <ExternalLink className="w-2.5 h-2.5 shrink-0" />
-                </a>
-              </div>
-              {/* Aviso dinâmico BPC / Programas Sociais */}
-              {social > 30 ? (
-                <p className="mt-2 text-xs font-semibold text-red-700 flex items-center gap-1.5">
-                  <ShieldAlert className="w-3.5 h-3.5 shrink-0" />
-                  Cerca de 1,5 milhão de idosos e PcDs podem perder sua única renda.
-                </p>
-              ) : social > 10 ? (
-                <p className="mt-2 text-xs font-semibold text-red-700 flex items-center gap-1.5">
-                  <ShieldAlert className="w-3.5 h-3.5 shrink-0" />
-                  Idosos e PcDs podem ter benefícios reduzidos.
-                </p>
-              ) : null}
-            </div>
+            <SliderCard
+              id="slider-social"
+              number={4}
+              title="Programas Sociais (BPC e Bolsa Família)"
+              subtitle="Economia gerada ao congelar o BPC (benefício de idosos e PcDs) e fazer um pente-fino agressivo para expulsar famílias da assistência básica."
+              value={social}
+              max={SLIDER_LIMITS.social}
+              step={10}
+              onChange={setSocial}
+              onDecrease={() => alterarValor(setSocial, social, -10, SLIDER_LIMITS.social)}
+              onIncrease={() => alterarValor(setSocial, social, 10, SLIDER_LIMITS.social)}
+              icon={Users}
+              iconClass="bg-purple-100 text-purple-800"
+              sourceHref="https://spbancarios.com.br/10/2026/nao-sou-mae-dinah-diz-daniella-marques-sobre-tesouraco-proposto-por-flavio-bolsonaro"
+              sourceTitle="Ver reportagem sobre o plano de corte de despesas sociais e BPC"
+              sourceContent={
+                social > 0
+                  ? 'Perda de renda básica de famílias abaixo da linha de pobreza'
+                  : 'Máximo: R$ 50 bilhões (Desvinculação do BPC)'
+              }
+              alert={
+                social > 30
+                  ? alertLine('Cerca de 1,5 milhão de idosos e PcDs podem perder sua única renda.')
+                  : social > 10
+                  ? alertLine('Idosos e PcDs podem ter benefícios reduzidos.')
+                  : null
+              }
+              ariaLabel="Corte em Programas Sociais (BPC e Bolsa Família)"
+            />
           </div>
+
 
           {/* Conclusão Técnica do Simulador */}
           <div className="mt-6 sm:mt-8 p-4 sm:p-5 bg-stone-100 rounded-xl border border-stone-300">
@@ -713,8 +433,12 @@ export default function App() {
                   <li className="flex items-start gap-3 bg-stone-900/80 border border-stone-800 rounded-lg p-3 sm:p-3.5">
                     <XCircle className="w-4 h-4 text-red-500 shrink-0 mt-0.5" />
                     <span className="text-xs sm:text-sm text-stone-200 leading-relaxed">
-                      <strong className="text-white">Saúde e Educação:</strong> Corte de R$ {saudeEducacao} bi{' '}
-                      <span className="text-stone-400">(Impacto: perda de verba para hospitais e escolas).</span>
+                      <strong className="text-white">Saúde e Educação:</strong> Corte de R$ {saudeEducacao} bi.{' '}
+                      <strong className="text-red-300">Impacto real:</strong>{' '}
+                      <span className="text-stone-300">
+                        A fila do SUS vai multiplicar. Meses de espera para exames básicos, falta de remédios na
+                        Farmácia Popular e menos merenda no prato das crianças nas escolas públicas.
+                      </span>
                     </span>
                   </li>
                 )}
@@ -722,8 +446,12 @@ export default function App() {
                   <li className="flex items-start gap-3 bg-stone-900/80 border border-stone-800 rounded-lg p-3 sm:p-3.5">
                     <XCircle className="w-4 h-4 text-red-500 shrink-0 mt-0.5" />
                     <span className="text-xs sm:text-sm text-stone-200 leading-relaxed">
-                      <strong className="text-white">Previdência:</strong> Corte de R$ {previdencia} bi{' '}
-                      <span className="text-stone-400">(Impacto: congelamento de aposentadorias e desvinculação do salário mínimo, podendo atingir até {Math.round((previdencia / 100) * 39)} milhões de beneficiários).</span>
+                      <strong className="text-white">Previdência:</strong> Corte de R$ {previdencia} bi.{' '}
+                      <strong className="text-red-300">Impacto real:</strong>{' '}
+                      <span className="text-stone-300">
+                        O dinheiro da aposentadoria vai comprar cada vez menos no mercado. A inflação sobe, mas o
+                        benefício não acompanha. É o empobrecimento silencioso de milhões de idosos.
+                      </span>
                     </span>
                   </li>
                 )}
@@ -731,8 +459,12 @@ export default function App() {
                   <li className="flex items-start gap-3 bg-stone-900/80 border border-stone-800 rounded-lg p-3 sm:p-3.5">
                     <XCircle className="w-4 h-4 text-red-500 shrink-0 mt-0.5" />
                     <span className="text-xs sm:text-sm text-stone-200 leading-relaxed">
-                      <strong className="text-white">Programas Sociais / BPC:</strong> Corte de R$ {social} bi{' '}
-                      <span className="text-stone-400">(Impacto: redução de renda de idosos, PcDs e famílias em situação de pobreza).</span>
+                      <strong className="text-white">Programas Sociais / BPC:</strong> Corte de R$ {social} bi.{' '}
+                      <strong className="text-red-300">Impacto real:</strong>{' '}
+                      <span className="text-stone-300">
+                        Pessoas com deficiência e idosos miseráveis perdem o poder de comprar o básico. Milhares de
+                        famílias vulneráveis são empurradas de volta para a linha da fome.
+                      </span>
                     </span>
                   </li>
                 )}
@@ -740,8 +472,13 @@ export default function App() {
                   <li className="flex items-start gap-3 bg-stone-900/80 border border-stone-800 rounded-lg p-3 sm:p-3.5">
                     <XCircle className="w-4 h-4 text-red-500 shrink-0 mt-0.5" />
                     <span className="text-xs sm:text-sm text-stone-200 leading-relaxed">
-                      <strong className="text-white">Máquina Pública:</strong> Corte de R$ {maquina} bi{' '}
-                      <span className="text-stone-400">(Impacto: paralisia de ministérios, fiscalização e serviços públicos).</span>
+                      <strong className="text-white">Máquina Pública:</strong> Corte de R$ {maquina} bi.{' '}
+                      <strong className="text-red-300">Impacto real:</strong>{' '}
+                      <span className="text-stone-300">
+                        O Brasil simplesmente para. A viatura da Polícia Federal fica sem gasolina, a emissão de
+                        passaportes trava e as Universidades Federais fecham as portas por falta de dinheiro para a
+                        conta de luz.
+                      </span>
                     </span>
                   </li>
                 )}
@@ -773,15 +510,14 @@ export default function App() {
       {/* ========================================================================= */}
       <section
         id="tesouraco"
-        className="relative min-h-[90vh] sm:min-h-screen w-full flex items-center justify-center bg-stone-950 text-stone-100 overflow-hidden py-20 sm:py-32 px-4 sm:px-6 border-y border-stone-900"
+        className="scroll-mt-20 relative w-full bg-stone-950 text-stone-100 overflow-hidden border-y border-stone-900 sm:min-h-screen sm:flex sm:items-center sm:justify-center sm:py-32 sm:px-6"
       >
-        {/* Fundo Gigante: Foto de Flávio e a Tesoura nítida e bem visível */}
-        <div className="absolute inset-0 z-0">
+        {/* Mobile: foto inteira, em fluxo, sem cortar; desktop: fundo full-bleed */}
+        <div className="relative w-full sm:absolute sm:inset-0 sm:z-0">
           <img
-            src="/image_304b62.jpg"
+            src={heroImage}
             alt="Flávio Bolsonaro empunhando a tesoura gigante com Javier Milei"
-            onError={() => setImageError(true)}
-            className="w-full h-full object-cover object-[center_top] filter brightness-[0.94] contrast-105"
+            className="w-full h-auto object-contain sm:h-full sm:object-cover sm:object-[center_top] filter brightness-[0.94] contrast-105"
           />
           {/* Overlay leve: preserva os rostos e a tesoura; o escurecimento se concentra na base */}
           <div className="absolute inset-0 bg-stone-950/10" />
@@ -789,9 +525,9 @@ export default function App() {
         </div>
 
         {/* Conteúdo Central no Primeiro Plano com leve proteção de leitura */}
-        <div className="relative z-10 max-w-4xl mx-auto text-center px-2">
+        <div className="relative z-10 w-full max-w-4xl mx-auto text-center px-3 sm:px-2 pb-8 sm:pb-0 -mt-4 sm:mt-0">
           {/* Caixa translúcida que garante 100% de contraste no texto sem escurecer a foto inteira */}
-          <div className="bg-stone-950/60 p-6 sm:p-12 rounded-3xl border border-white/10 shadow-2xl">
+          <div className="bg-stone-950/90 sm:bg-stone-950/60 p-5 sm:p-12 rounded-2xl sm:rounded-3xl border border-white/10 shadow-2xl backdrop-blur-sm sm:backdrop-blur-none">
             {/* Kicker estilo documento público */}
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-red-950/90 text-red-300 border border-red-800/60 text-[11px] sm:text-xs font-mono uppercase tracking-widest mb-6 sm:mb-8">
               <Scissors className="w-3.5 h-3.5 text-red-400" />
@@ -868,7 +604,7 @@ export default function App() {
       {/* ========================================================================= */}
       {/* SEÇÃO 3: O Espelho Argentino (A Consequência)                             */}
       {/* ========================================================================= */}
-      <section id="argentina" className="py-14 sm:py-20 px-3 sm:px-6 bg-stone-200 text-stone-900 border-b border-stone-300">
+      <section id="argentina" className="scroll-mt-20 py-14 sm:py-20 px-3 sm:px-6 bg-stone-200 text-stone-900 border-b border-stone-300">
         <div className="max-w-5xl mx-auto">
           {/* Cabeçalho da Seção: imagem + texto + explicação da motosserra */}
           <div className="mb-10 sm:mb-14">
@@ -895,7 +631,7 @@ export default function App() {
               {/* Imagem de Milei com motosserra — P&B + tint vermelho */}
               <figure className="relative shrink-0 w-full rounded-xl overflow-hidden shadow-lg border border-stone-400 bg-stone-900">
                 <img
-                  src="/milei_motosserra.jpg"
+                  src={mileiImage}
                   alt="Javier Milei segurando uma motosserra no palco — símbolo dos cortes radicais"
                   className="w-full h-60 sm:h-64 md:h-72 object-cover object-[center_35%] grayscale contrast-110"
                 />
@@ -941,7 +677,7 @@ export default function App() {
           <div className="mb-8 sm:mb-10">
             <h3 className="text-[11px] sm:text-xs font-mono uppercase tracking-widest text-stone-600 mb-3 flex items-center gap-2">
               <Scale className="w-4 h-4 text-red-800 shrink-0" />
-              O mesmo receituário, dois nomes
+              DUAS FERRAMENTAS: O MESMO GOLPE
             </h3>
 
             <div className="grid md:grid-cols-2 rounded-2xl overflow-hidden border border-stone-400 shadow-lg">
@@ -1142,280 +878,8 @@ export default function App() {
           </p>
         </div>
       </section>
-
-      {/* ========================================================================= */}
-      {/* SEÇÃO 5: Rodapé / Provas e Fontes Oficiais (Transparência)                */}
-      {/* ========================================================================= */}
-      <footer id="fontes" className="bg-stone-900 text-stone-300 py-12 sm:py-16 px-3 sm:px-6 border-t border-stone-800">
-        <div className="max-w-5xl mx-auto">
-          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 sm:gap-6 pb-8 sm:pb-10 border-b border-stone-800">
-            <div>
-              <div className="flex items-center gap-2 text-white font-serif font-bold text-lg sm:text-xl mb-1 sm:mb-2">
-                <FileSpreadsheet className="w-5 h-5 text-red-500 shrink-0" />
-                Auditoria Cidadã do Orçamento
-              </div>
-              {/* Texto Técnico Obrigatório */}
-              <p className="text-stone-400 text-xs sm:text-sm max-w-2xl leading-relaxed">
-                Baseado na LOA 2026 e no Raio X do Orçamento da Câmara. Cerca de 91% das despesas primárias
-                são obrigatórias — e só R$ 3 de cada R$ 100 são realmente livres.
-              </p>
-            </div>
-
-            <div className="text-[11px] sm:text-xs text-stone-500 font-mono">
-              Atualização com dados oficiais de finanças públicas federais
-            </div>
-          </div>
-
-          {/* Lista de Fontes com Links Reais e Clicáveis */}
-          <div className="pt-6 sm:pt-8">
-            <h3 className="text-xs uppercase tracking-widest text-stone-400 font-mono mb-4 sm:mb-6">
-              Reportagens e investigação:
-            </h3>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
-              {/* Fonte 1: CNN / IFI */}
-              <a
-                href="https://www.cnnbrasil.com.br/economia/macroeconomia/despesas-obrigatorias-estao-encurralando-capacidade-de-investimento-diz-diretor-do-ifi-ao-ww/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group p-3.5 sm:p-4 bg-stone-800/60 hover:bg-stone-800 rounded-lg border border-stone-700/60 transition flex items-start justify-between gap-3 cursor-pointer"
-              >
-                <div>
-                  <span className="text-[11px] sm:text-xs text-red-400 font-mono block mb-1">CNN Brasil / IFI</span>
-                  <p className="text-xs sm:text-sm font-medium text-stone-200 group-hover:text-white transition">
-                    "91% dos gastos são obrigatórios e encurralam investimentos"
-                  </p>
-                </div>
-                <ExternalLink className="w-4 h-4 text-stone-400 group-hover:text-white shrink-0 mt-1 transition" />
-              </a>
-
-              {/* Fonte 2: IstoÉ Dinheiro / Folha */}
-              <a
-                href="https://istoedinheiro.com.br/equipe-de-flavio-estuda-corte-de-2-do-pib-em-despesas-diz-folha"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group p-3.5 sm:p-4 bg-stone-800/60 hover:bg-stone-800 rounded-lg border border-stone-700/60 transition flex items-start justify-between gap-3 cursor-pointer"
-              >
-                <div>
-                  <span className="text-[11px] sm:text-xs text-red-400 font-mono block mb-1">IstoÉ Dinheiro / Folha</span>
-                  <p className="text-xs sm:text-sm font-medium text-stone-200 group-hover:text-white transition">
-                    "Equipe estuda cortes na Previdência, BPC e Saúde (corte de R$ 250 bi / 2% do PIB)"
-                  </p>
-                </div>
-                <ExternalLink className="w-4 h-4 text-stone-400 group-hover:text-white shrink-0 mt-1 transition" />
-              </a>
-
-              {/* Fonte 3: Sindicato dos Bancários */}
-              <a
-                href="https://spbancarios.com.br/10/2026/nao-sou-mae-dinah-diz-daniella-marques-sobre-tesouraco-proposto-por-flavio-bolsonaro"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group p-3.5 sm:p-4 bg-stone-800/60 hover:bg-stone-800 rounded-lg border border-stone-700/60 transition flex items-start justify-between gap-3 cursor-pointer"
-              >
-                <div>
-                  <span className="text-[11px] sm:text-xs text-red-400 font-mono block mb-1">Sindicato dos Bancários</span>
-                  <p className="text-xs sm:text-sm font-medium text-stone-200 group-hover:text-white transition">
-                    "A proposta da coordenadora Daniella Marques e o plano do Tesouraço"
-                  </p>
-                </div>
-                <ExternalLink className="w-4 h-4 text-stone-400 group-hover:text-white shrink-0 mt-1 transition" />
-              </a>
-
-              {/* Fonte 4: CBN / IFI */}
-              <a
-                href="https://miltonjung.com.br/2026/09/01/50-debates-para-o-brasil-gastos-obrigatorios-protegem-direitos-ou-engessam-o-orcamento-publico/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group p-3.5 sm:p-4 bg-stone-800/60 hover:bg-stone-800 rounded-lg border border-stone-700/60 transition flex items-start justify-between gap-3 cursor-pointer"
-              >
-                <div>
-                  <span className="text-[11px] sm:text-xs text-red-400 font-mono block mb-1">CBN / IFI</span>
-                  <p className="text-xs sm:text-sm font-medium text-stone-200 group-hover:text-white transition">
-                    "De cada R$ 100, 97 vão para despesas obrigatórias ou rígidas"
-                  </p>
-                </div>
-                <ExternalLink className="w-4 h-4 text-stone-400 group-hover:text-white shrink-0 mt-1 transition" />
-              </a>
-
-              {/* Fonte 5: C5N / CICCRA */}
-              <a
-                href="https://www.c5n.com/sociedad/historico-desplome-2026-cuantos-kilos-carne-consumen-los-argentinos-al-ano-n246629"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group p-3.5 sm:p-4 bg-stone-800/60 hover:bg-stone-800 rounded-lg border border-stone-700/60 transition flex items-start justify-between gap-3 cursor-pointer"
-              >
-                <div>
-                  <span className="text-[11px] sm:text-xs text-red-400 font-mono block mb-1">C5N / CICCRA</span>
-                  <p className="text-xs sm:text-sm font-medium text-stone-200 group-hover:text-white transition">
-                    "Consumo de carne cai a 46,3 kg por pessoa/ano, o menor em 20 anos"
-                  </p>
-                </div>
-                <ExternalLink className="w-4 h-4 text-stone-400 group-hover:text-white shrink-0 mt-1 transition" />
-              </a>
-
-              {/* Fonte 6: Somos Jujuy / IIEP-UBA */}
-              <a
-                href="https://www.somosjujuy.com.ar/nacionales/los-servicios-aumentaron-996-era-milei-transporte-energia-lideran-subas-n117482/amp"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group p-3.5 sm:p-4 bg-stone-800/60 hover:bg-stone-800 rounded-lg border border-stone-700/60 transition flex items-start justify-between gap-3 cursor-pointer"
-              >
-                <div>
-                  <span className="text-[11px] sm:text-xs text-red-400 font-mono block mb-1">Somos Jujuy / IIEP-UBA</span>
-                  <p className="text-xs sm:text-sm font-medium text-stone-200 group-hover:text-white transition">
-                    "Transporte +996% e energia +591% na era Milei"
-                  </p>
-                </div>
-                <ExternalLink className="w-4 h-4 text-stone-400 group-hover:text-white shrink-0 mt-1 transition" />
-              </a>
-
-            </div>
-          </div>
-
-          {/* Dados oficiais — bloco final do rodapé */}
-          <div className="pt-8 mt-8 border-t border-stone-800">
-            <h3 className="text-xs uppercase tracking-widest text-stone-400 font-mono mb-2">
-              Dados oficiais
-            </h3>
-            <p className="text-xs text-stone-500 mb-4 max-w-2xl leading-relaxed">
-              Consulte os números citados diretamente nas bases públicas e nos relatórios dos organismos oficiais:
-            </p>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
-              {/* IFI */}
-              <a
-                href="https://www12.senado.leg.br/ifi"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group p-3.5 sm:p-4 bg-stone-800/40 hover:bg-stone-800 rounded-lg border border-stone-700/60 transition flex items-start justify-between gap-3 cursor-pointer"
-              >
-                <div>
-                  <span className="text-[11px] sm:text-xs text-red-400 font-mono block mb-1">
-                    Instituição Fiscal Independente (IFI) • Senado Federal
-                  </span>
-                  <p className="text-xs sm:text-sm font-medium text-stone-200 group-hover:text-white transition">
-                    Gastos obrigatórios, Previdência e Relatórios de Acompanhamento Fiscal.
-                  </p>
-                </div>
-                <ExternalLink className="w-4 h-4 text-stone-400 group-hover:text-white shrink-0 mt-1 transition" />
-              </a>
-
-              {/* Câmara dos Deputados */}
-              <a
-                href="https://www.camara.leg.br/noticias/1246912-consultoria-de-orcamento-publica-raio-x-da-lei-orcamentaria-2026-apos-vetos-presidenciais/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group p-3.5 sm:p-4 bg-stone-800/40 hover:bg-stone-800 rounded-lg border border-stone-700/60 transition flex items-start justify-between gap-3 cursor-pointer"
-              >
-                <div>
-                  <span className="text-[11px] sm:text-xs text-red-400 font-mono block mb-1">
-                    Câmara dos Deputados • Raio X da LOA 2026
-                  </span>
-                  <p className="text-xs sm:text-sm font-medium text-stone-200 group-hover:text-white transition">
-                    90,2% de despesas obrigatórias e 9,8% discricionárias (R$ 256,4 bi).
-                  </p>
-                </div>
-                <ExternalLink className="w-4 h-4 text-stone-400 group-hover:text-white shrink-0 mt-1 transition" />
-              </a>
-
-              {/* SIGA Brasil */}
-              <a
-                href="https://www12.senado.leg.br/orcamento/sigabrasil"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group p-3.5 sm:p-4 bg-stone-800/40 hover:bg-stone-800 rounded-lg border border-stone-700/60 transition flex items-start justify-between gap-3 cursor-pointer"
-              >
-                <div>
-                  <span className="text-[11px] sm:text-xs text-red-400 font-mono block mb-1">
-                    SIGA Brasil • Senado Federal
-                  </span>
-                  <p className="text-xs sm:text-sm font-medium text-stone-200 group-hover:text-white transition">
-                    Orçamento de Saúde, Educação e Máquina Pública: execução e dotação por órgão.
-                  </p>
-                </div>
-                <ExternalLink className="w-4 h-4 text-stone-400 group-hover:text-white shrink-0 mt-1 transition" />
-              </a>
-
-              {/* Portal da Transparência */}
-              <a
-                href="https://portaldatransparencia.gov.br"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group p-3.5 sm:p-4 bg-stone-800/40 hover:bg-stone-800 rounded-lg border border-stone-700/60 transition flex items-start justify-between gap-3 cursor-pointer"
-              >
-                <div>
-                  <span className="text-[11px] sm:text-xs text-red-400 font-mono block mb-1">
-                    Portal da Transparência • Governo Federal
-                  </span>
-                  <p className="text-xs sm:text-sm font-medium text-stone-200 group-hover:text-white transition">
-                    Execução orçamentária, gastos públicos, transferências e benefícios sociais.
-                  </p>
-                </div>
-                <ExternalLink className="w-4 h-4 text-stone-400 group-hover:text-white shrink-0 mt-1 transition" />
-              </a>
-
-              {/* INDEC */}
-              <a
-                href="https://www.indec.gob.ar/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group p-3.5 sm:p-4 bg-stone-800/40 hover:bg-stone-800 rounded-lg border border-stone-700/60 transition flex items-start justify-between gap-3 cursor-pointer"
-              >
-                <div>
-                  <span className="text-[11px] sm:text-xs text-red-400 font-mono block mb-1">
-                    INDEC • República Argentina
-                  </span>
-                  <p className="text-xs sm:text-sm font-medium text-stone-200 group-hover:text-white transition">
-                    Pobreza, inflação e custo de vida na Argentina.
-                  </p>
-                </div>
-                <ExternalLink className="w-4 h-4 text-stone-400 group-hover:text-white shrink-0 mt-1 transition" />
-              </a>
-
-              {/* CICCRA */}
-              <a
-                href="http://www.ciccra.com.ar/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group p-3.5 sm:p-4 bg-stone-800/40 hover:bg-stone-800 rounded-lg border border-stone-700/60 transition flex items-start justify-between gap-3 cursor-pointer"
-              >
-                <div>
-                  <span className="text-[11px] sm:text-xs text-red-400 font-mono block mb-1">
-                    CICCRA • Câmara da Indústria e Comércio de Carnes
-                  </span>
-                  <p className="text-xs sm:text-sm font-medium text-stone-200 group-hover:text-white transition">
-                    Consumo de carne e poder de compra na Argentina.
-                  </p>
-                </div>
-                <ExternalLink className="w-4 h-4 text-stone-400 group-hover:text-white shrink-0 mt-1 transition" />
-              </a>
-
-              {/* Banco Mundial */}
-              <a
-                href="https://www.worldbank.org/pt/country/argentina"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group p-3.5 sm:p-4 bg-stone-800/40 hover:bg-stone-800 rounded-lg border border-stone-700/60 transition flex items-start justify-between gap-3 cursor-pointer"
-              >
-                <div>
-                  <span className="text-[11px] sm:text-xs text-red-400 font-mono block mb-1">
-                    Banco Mundial • Argentina
-                  </span>
-                  <p className="text-xs sm:text-sm font-medium text-stone-200 group-hover:text-white transition">
-                    Relatórios econômicos, consumo e custo de vida.
-                  </p>
-                </div>
-                <ExternalLink className="w-4 h-4 text-stone-400 group-hover:text-white shrink-0 mt-1 transition" />
-              </a>
-            </div>
-          </div>
-
-          <div className="mt-10 pt-6 border-t border-stone-800 flex flex-col sm:flex-row items-center justify-between gap-2 text-[11px] text-stone-500">
-            <p className="font-mono uppercase tracking-wider">Dossiê Especial • O Tesouraço</p>
-            <p>Dados públicos • Atualizado em outubro de 2026</p>
-          </div>
-        </div>
-      </footer>
+      </main>
+      <Footer />
     </div>
   );
 }
