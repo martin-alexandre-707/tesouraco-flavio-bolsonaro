@@ -143,7 +143,7 @@ export default function App() {
           </h1>
           
           <p className="text-base sm:text-lg md:text-xl text-stone-700 font-normal leading-relaxed">
-            A promessa de campanha de Flávio Bolsonaro é{' '}
+            A proposta em estudo pela equipe de Flávio Bolsonaro é{' '}
             {/* Hiperlink clicável para matéria oficial sobre os R$ 250 bilhões */}
             <a
               href="https://istoedinheiro.com.br/equipe-de-flavio-estuda-corte-de-2-do-pib-em-despesas-diz-folha"
@@ -155,7 +155,7 @@ export default function App() {
               <span>cortar R$ 250 bilhões</span>
               <ExternalLink className="w-3.5 h-3.5 sm:w-4 sm:h-4 inline text-red-700 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
             </a>
-            . Tente você mesmo fechar essa conta usando os dados reais do Governo Federal.
+            , segundo a Folha. A campanha nega posição oficial. Tente você mesmo fechar essa conta usando os dados reais do Governo Federal.
           </p>
         </div>
 
@@ -268,9 +268,9 @@ export default function App() {
                 </h3>
                 <p className="text-xs sm:text-sm text-stone-700 leading-relaxed">
                   O governo não pode simplesmente “deixar de pagar” aposentados ou dar calote. Os limites abaixo
-                  são o <strong className="text-stone-900">máximo estimado</strong> de economia com mudanças na lei —
-                  não o orçamento total de cada área. Agora tente chegar aos{' '}
-                  <strong className="text-stone-900">R$ 250 bilhões</strong>.
+                  são <strong className="text-stone-900">premissas do simulador</strong> — estimativas nossas, não
+                  projeções oficiais. São médias anuais; em 4 anos, o acumulado é cerca de 4x. Agora tente chegar
+                  aos <strong className="text-stone-900">R$ 250 bilhões</strong>.
                 </p>
                 <div className="mt-2.5 flex flex-wrap items-center gap-x-2 gap-y-1.5">
                   <div className="flex h-2 w-24 overflow-hidden rounded-full bg-stone-200" aria-hidden="true">
@@ -298,7 +298,7 @@ export default function App() {
               id="slider-maquina"
               number={1}
               title="Funcionamento do País (Máquina Pública)"
-              subtitle="Dinheiro livre. O limite de 40 bi é o máximo que dá para cortar (secar manutenção de estradas, emissão de passaportes e viaturas da Polícia Federal) antes de causar um apagão total no país."
+              subtitle="Dinheiro livre. O limite de 40 bi é uma premissa conservadora para o custeio (manutenção de estradas, passaportes e viaturas da PF) antes de causar um apagão total no país."
               value={maquina}
               max={SLIDER_LIMITS.maquina}
               step={5}
@@ -307,9 +307,9 @@ export default function App() {
               onIncrease={() => alterarValor(setMaquina, maquina, 5, SLIDER_LIMITS.maquina)}
               icon={Building2}
               iconClass="bg-stone-200 text-stone-700"
-              sourceHref="https://www.camara.leg.br/radio/radioagencia/1151197-governo-podera-ter-dificuldade-com-custeio-da-maquina-publica-nos-proximos-anos"
-              sourceTitle="Entenda o custeio da máquina pública (Câmara dos Deputados)"
-              sourceContent="Custeio administrativo estimado: até R$ 40 bilhões"
+              sourceHref="https://www.camara.leg.br/noticias/1151191-governo-podera-ter-dificuldade-com-custeio-da-maquina-publica-nos-proximos-anos/"
+              sourceTitle="Câmara: custeio estimado em cerca de R$ 70 bi; o simulador usa um cenário conservador"
+              sourceContent="Custeio estimado: ~R$ 70 bi (cenário: R$ 40 bi)"
               alert={maquinaAlert}
               ariaLabel="Corte no Funcionamento do País (Máquina Pública)"
             />
@@ -318,7 +318,7 @@ export default function App() {
               id="slider-previdencia"
               number={2}
               title="Previdência (INSS)"
-              subtitle="Economia gerada ao desvincular a aposentadoria do salário mínimo. O idoso recebe apenas a inflação e perde poder de compra ano após ano para o governo poupar até 100 bi."
+              subtitle="Economia gerada ao desvincular a aposentadoria do salário mínimo. A correção pelo INPC preserva o valor real, mas não acompanha os ganhos reais do mínimo; o idoso perde poder de compra relativo."
               value={previdencia}
               max={SLIDER_LIMITS.previdencia}
               step={10}
@@ -332,11 +332,11 @@ export default function App() {
               sourceContent={
                 previdencia > 0
                   ? `Pode atingir ${Math.round((previdencia / SLIDER_LIMITS.previdencia) * 39)} milhões de beneficiários do INSS`
-                  : 'Máximo: R$ 100 bilhões (cerca de 39 milhões de benefícios no INSS)'
+                  : 'Premissa: R$ 100 bilhões (cerca de 39 milhões de benefícios no INSS)'
               }
               alert={
                 previdencia > 30
-                  ? alertLine('Risco de congelamento das aposentadorias e desvinculação do salário mínimo.')
+                  ? alertLine('Risco de desvinculação do salário mínimo e perda de ganhos reais.')
                   : null
               }
               ariaLabel="Corte na Previdência (INSS)"
@@ -346,7 +346,7 @@ export default function App() {
               id="slider-saude-educacao"
               number={3}
               title="Saúde e Educação (Fim dos Pisos)"
-              subtitle="Dinheiro retido ao rasgar a lei que obriga um investimento mínimo nessas áreas. O limite de 80 bi é o que tirariam diretamente de hospitais, vacinas e merenda escolar (Fundeb)."
+              subtitle="Dinheiro retido ao mudar a regra de correção dos pisos constitucionais. O limite de 80 bi é uma premissa; a projeção Folha/InfoMoney vai de R$ 23 bi no 1º ano a R$ 145 bi no 10º."
               value={saudeEducacao}
               max={SLIDER_LIMITS.saudeEducacao}
               step={10}
@@ -355,12 +355,12 @@ export default function App() {
               onIncrease={() => alterarValor(setSaudeEducacao, saudeEducacao, 10, SLIDER_LIMITS.saudeEducacao)}
               icon={HeartPulse}
               iconClass="bg-rose-100 text-rose-800"
-              sourceHref="https://www.cnnbrasil.com.br/economia/macroeconomia/despesas-obrigatorias-estao-encurralando-capacidade-de-investimento-diz-diretor-do-ifi-ao-ww/"
-              sourceTitle="Ver análise do IFI sobre pisos constitucionais de Saúde e Educação"
+              sourceHref="https://www.infomoney.com.br/politica/plano-de-ajuste-fiscal-de-flavio-bolsonaro-preve-corte-de-2-do-pib-diz-jornal/"
+              sourceTitle="Projeção Folha/InfoMoney sobre o fim dos pisos de Saúde e Educação"
               sourceContent={
                 saudeEducacao > 0
                   ? 'Corte no repasse a hospitais, vacinas, merenda e Fundeb'
-                  : 'Máximo: R$ 80 bilhões (Fim dos Pisos da Saúde e Educação)'
+                  : 'Premissa: R$ 80 bilhões (média de R$ 800 bi em 10 anos)'
               }
               alert={
                 saudeEducacao > 50
@@ -375,8 +375,8 @@ export default function App() {
             <SliderCard
               id="slider-social"
               number={4}
-              title="Programas Sociais (BPC e Bolsa Família)"
-              subtitle="Economia gerada ao congelar o BPC (benefício de idosos e PcDs) e fazer um pente-fino agressivo para expulsar famílias da assistência básica."
+              title="Programas Sociais (BPC)"
+              subtitle="Economia gerada ao corrigir o BPC (benefício de idosos e PcDs) apenas pela inflação e revisar a elegibilidade."
               value={social}
               max={SLIDER_LIMITS.social}
               step={10}
@@ -385,21 +385,21 @@ export default function App() {
               onIncrease={() => alterarValor(setSocial, social, 10, SLIDER_LIMITS.social)}
               icon={Users}
               iconClass="bg-purple-100 text-purple-800"
-              sourceHref="https://spbancarios.com.br/10/2026/nao-sou-mae-dinah-diz-daniella-marques-sobre-tesouraco-proposto-por-flavio-bolsonaro"
-              sourceTitle="Ver reportagem sobre o plano de corte de despesas sociais e BPC"
+              sourceHref="https://bpmoney.com.br/economia/ajuste-fiscal-flavio-bolsonaro-incognita-mercado-o-que-falta/"
+              sourceTitle="Campanha nega cortar BPC e Bolsa Família; o corte é cenário do simulador"
               sourceContent={
                 social > 0
-                  ? 'Perda de renda básica de famílias abaixo da linha de pobreza'
-                  : 'Máximo: R$ 50 bilhões (Desvinculação do BPC)'
+                  ? 'Revisão do BPC pode reduzir renda de famílias vulneráveis'
+                  : 'Premissa: R$ 50 bilhões (BPC)'
               }
               alert={
                 social > 30
-                  ? alertLine('Cerca de 1,5 milhão de idosos e PcDs podem perder sua única renda.')
+                  ? alertLine('Risco de redução do BPC para idosos e PcDs.')
                   : social > 10
                   ? alertLine('Idosos e PcDs podem ter benefícios reduzidos.')
                   : null
               }
-              ariaLabel="Corte em Programas Sociais (BPC e Bolsa Família)"
+              ariaLabel="Corte em Programas Sociais (BPC)"
             />
           </div>
 
@@ -483,8 +483,9 @@ export default function App() {
                       <strong className="text-white">Previdência:</strong> Corte de R$ {previdencia} bi.{' '}
                       <strong className="text-red-300">Impacto real:</strong>{' '}
                       <span className="text-stone-300">
-                        O dinheiro da aposentadoria vai comprar cada vez menos no mercado. A inflação sobe, mas o
-                        benefício não acompanha. É o empobrecimento silencioso de milhões de idosos.
+                        O dinheiro da aposentadoria vai comprar cada vez menos em relação ao salário mínimo. A
+                        correção pelo INPC preserva o valor real, mas não acompanha os ganhos reais do mínimo. É o
+                        empobrecimento relativo de milhões de idosos.
                       </span>
                     </span>
                   </li>
@@ -493,11 +494,11 @@ export default function App() {
                   <li className="flex items-start gap-3 bg-stone-900/80 border border-stone-800 rounded-lg p-3 sm:p-3.5">
                     <XCircle className="w-4 h-4 text-red-500 shrink-0 mt-0.5" />
                     <span className="text-xs sm:text-sm text-stone-200 leading-relaxed">
-                      <strong className="text-white">Programas Sociais / BPC:</strong> Corte de R$ {social} bi.{' '}
+                      <strong className="text-white">BPC:</strong> Corte de R$ {social} bi.{' '}
                       <strong className="text-red-300">Impacto real:</strong>{' '}
                       <span className="text-stone-300">
-                        Pessoas com deficiência e idosos miseráveis perdem o poder de comprar o básico. Milhares de
-                        famílias vulneráveis são empurradas de volta para a linha da fome.
+                        Pessoas com deficiência e idosos miseráveis podem perder o poder de comprar o básico.
+                        Milhares de famílias vulneráveis podem ser empurradas de volta para a linha da fome.
                       </span>
                     </span>
                   </li>
@@ -579,10 +580,10 @@ export default function App() {
         <div className="relative z-10 w-full max-w-4xl mx-auto text-center px-3 sm:px-2 pb-8 sm:pb-0 -mt-4 sm:mt-0">
           {/* Caixa translúcida que garante 100% de contraste no texto sem escurecer a foto inteira */}
           <div className="bg-stone-950/90 sm:bg-stone-950/60 p-5 sm:p-12 rounded-2xl sm:rounded-3xl border border-white/10 shadow-2xl backdrop-blur-sm sm:backdrop-blur-none">
-            {/* Kicker estilo documento público */}
+            {/* Kicker editorial */}
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-red-950/90 text-red-300 border border-red-800/60 text-[11px] sm:text-xs font-mono uppercase tracking-widest mb-6 sm:mb-8">
               <Scissors className="w-3.5 h-3.5 text-red-400" />
-              <span>A Retórica vs. A Realidade • Documento Público</span>
+              <span>A Retórica vs. A Realidade • Análise Independente</span>
             </div>
 
             {/* Tipografia Gigante e em Destaque */}
@@ -620,19 +621,19 @@ export default function App() {
             {/* Infográfico Comparativo da Realidade Orçamentária em Cards Translúcidos */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-left max-w-2xl mx-auto">
               <div className="p-4 sm:p-5 bg-stone-900/90 rounded-2xl border border-stone-700/80 shadow-xl">
-                <span className="text-3xl sm:text-4xl font-serif font-black text-white block mb-1">91%</span>
-                <h3 className="font-bold text-stone-200 text-sm sm:text-base mb-1">91% Sustentam Direitos Básicos</h3>
+                <span className="text-3xl sm:text-4xl font-serif font-black text-white block mb-1">90,2%</span>
+                <h3 className="font-bold text-stone-200 text-sm sm:text-base mb-1">90,2% Sustentam Direitos Básicos</h3>
                 <p className="text-xs sm:text-sm text-stone-400 leading-relaxed">
-                  Cerca de 91% das despesas primárias (R$ 2,3 trilhões) já estão comprometidas por lei com
+                  Cerca de 90,2% das despesas primárias (R$ 2,3 trilhões) já estão comprometidas por lei com
                   aposentadorias, BPC, salários de médicos do SUS e professores. É aqui que está o dinheiro grosso.{' '}
                   <strong className="text-stone-200">Não dá para cortar bilhões sem ferir essas áreas.</strong>
                 </p>
               </div>
 
               <div className="p-4 sm:p-5 bg-red-950/80 rounded-2xl border border-red-900/80 shadow-xl">
-                <span className="text-3xl sm:text-4xl font-serif font-black text-red-400 block mb-1">9%</span>
+                <span className="text-3xl sm:text-4xl font-serif font-black text-red-400 block mb-1">9,8%</span>
                 <h3 className="font-bold text-red-200 text-sm sm:text-base mb-1">
-                  9% é o Dinheiro “Livre” (mas só R$ 3 de cada R$ 100)
+                  9,8% é o Dinheiro “Livre” (mas só R$ 3 de cada R$ 100)
                 </h3>
                 <p className="text-xs sm:text-sm text-red-300/80 leading-relaxed">
                   O Raio X da LOA 2026 mostra <strong className="text-red-200">9,8% de despesas discricionárias</strong>{' '}
@@ -701,15 +702,15 @@ export default function App() {
                 <p className="text-base sm:text-lg md:text-xl text-stone-800 font-normal leading-relaxed">
                   A <strong>'Motosserra'</strong> não cortou apenas a burocracia, mas atingiu diretamente o bolso do trabalhador. Na prática, o plano de ajuste incluiu o corte drástico de subsídios de luz e transporte, congelamento de obras públicas e demissões em massa no setor público. <strong>A economista de Flávio,{' '}
                   <a
-                    href="https://revistaforum.com.br/economia/flavio-bolsonaro-milei-economia/"
+                    href="https://bpmoney.com.br/economia/ajuste-fiscal-flavio-bolsonaro-incognita-mercado-o-que-falta/"
                     target="_blank"
                     rel="noopener noreferrer"
-                    title="Reportagem: economista de Flávio diz que ele faria o mesmo que Milei"
+                    title="Reportagem: Daniella Marques chama Milei de ótimo exemplo em investimento e menos burocracia"
                     className="text-red-900 underline decoration-red-400 decoration-2 underline-offset-2 hover:text-red-950"
                   >
                     Daniella Marques
                   </a>
-                  , já disse que ele faria o mesmo que Milei na economia — e o próprio Flávio adotou a tesoura como símbolo.</strong> Veja o resultado na economia real da Argentina:
+                  , já chamou Milei de “ótimo exemplo” em capacidade de investimento e menos burocracia — e o próprio Flávio adotou a tesoura como símbolo.</strong> Veja o resultado na economia real da Argentina:
                 </p>
 
                 <div className="mt-4 sm:mt-5 space-y-3 text-sm sm:text-base text-stone-700 leading-relaxed">
@@ -822,16 +823,16 @@ export default function App() {
                 <p className="text-xs sm:text-sm text-stone-700 leading-relaxed">
                   O indicador subiu para <strong>32,3%</strong> da população dos 31 aglomerados urbanos —
                   cerca de <strong>9,7 milhões de pessoas</strong> — no 1º semestre de 2026, alta de 4,1 pontos
-                  em relação ao semestre anterior. A extrema pobreza atingiu <strong>7,5%</strong> (2,25 milhões).
+                  em relação aos 28,2% do semestre anterior. A extrema pobreza atingiu <strong>7,5%</strong> (2,2 milhões).
                 </p>
               </div>
               <a
-                href="https://www.gp1.com.br/internacional/noticia/2026/9/25/pobreza-na-argentina-atinge-323-da-populacao-aponta-indec-632353.html"
+                href="https://agenciabrasil.ebc.com.br/internacional/noticia/2026-09/pobreza-na-argentina-volta-subir-e-atinge-323-da-populacao"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="mt-5 pt-3 border-t border-stone-200 text-[11px] text-red-800 hover:text-red-950 font-mono flex items-center justify-between group"
               >
-                <span>Fonte: INDEC / 1º semestre de 2026</span>
+                <span>Fonte: INDEC / Agência Brasil</span>
                 <ExternalLink className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
               </a>
             </div>
@@ -853,8 +854,7 @@ export default function App() {
                 </div>
                 <p className="text-xs sm:text-sm text-stone-700 leading-relaxed">
                   Em julho de 2026, o consumo caiu para <strong>46,3 kg por pessoa/ano</strong> — quase 5 kg
-                  abaixo de 2025. No acumulado de 12 meses até março, os cortes subiram <strong>63,6%</strong>,
-                  quase o dobro da inflação.
+                  abaixo de 2025. A queda é atribuída a menos abate e mais exportação, não diretamente ao ajuste.
                 </p>
               </div>
               <a

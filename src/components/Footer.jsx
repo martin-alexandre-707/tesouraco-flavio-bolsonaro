@@ -22,10 +22,12 @@ export default function Footer() {
           </h2>
 
           <p className="text-xs sm:text-sm text-stone-600 leading-relaxed border-l-2 border-stone-400 pl-3 mb-6">
-            * Nenhum número deste simulador foi tirado do acaso. Os limites são estimativas de ordem de grandeza
-            calibradas a partir das propostas de ajuste de 2% do PIB, das estimativas de mercado para o pacote e dos
-            estudos citados abaixo. Como as medidas dependem de mudança nas leis e podem ser implementadas em ritmos
-            diferentes, os valores não representam um corte linear no primeiro dia — nem o orçamento total de cada área.
+            * Os limites do simulador são <strong className="text-stone-700">premissas editoriais</strong> —
+            estimativas nossas, não projeções oficiais. Foram calibrados a partir da distribuição do DIEESE para
+            um ajuste de R$ 194 bi (51% transferências, 17% pessoal, 32% outras despesas), das projeções
+            Folha/InfoMoney para os pisos e do espaço realmente livre apontado pela IFI. São médias anuais; em
+            4 anos, o acumulado é cerca de 4x. As reportagens falam em R$ 200–250 bi; usamos R$ 250 bi como teto.
+            A campanha nega posição oficial.
           </p>
 
           <ul className="space-y-5">
@@ -37,7 +39,8 @@ export default function Footer() {
               <p className="mt-1 text-xs sm:text-sm text-stone-600 leading-relaxed">
                 <strong className="text-stone-700">Fato:</strong> a proposta central atribuída ao plano de Flávio
                 Bolsonaro é um ajuste de 2% do PIB — cerca de R$ 250 bilhões — concentrado em despesas obrigatórias,
-                segundo reportagens de Folha e InfoMoney.
+                segundo reportagens de Folha e InfoMoney. A campanha nega posição oficial; outras reportagens falam
+                em R$ 200 bilhões.
               </p>
               <a
                 href="https://www.infomoney.com.br/politica/plano-de-ajuste-fiscal-de-flavio-bolsonaro-preve-corte-de-2-do-pib-diz-jornal/"
@@ -53,13 +56,35 @@ export default function Footer() {
             <li className="relative pl-4">
               <span className="absolute left-0 top-2 w-1.5 h-1.5 rounded-full bg-red-800" />
               <h3 className="text-xs sm:text-sm font-bold text-stone-800">
-                Previdência e BPC (Limites de R$ 100 bi e R$ 30 bi)
+                Distribuição do corte (DIEESE)
+              </h3>
+              <p className="mt-1 text-xs sm:text-sm text-stone-600 leading-relaxed">
+                <strong className="text-stone-700">Premissa:</strong> estudo do DIEESE encomendado pelas centrais
+                sindicais simulou um ajuste de <strong className="text-stone-700">R$ 194 bi</strong>: 51% em
+                transferências de renda, 17% em pessoal e 32% em outras despesas. Usamos essa distribuição — e a
+                escalamos para o teto de R$ 250 bi — para calibrar os limites do simulador.
+              </p>
+              <a
+                href="https://diap.org.br/index.php/noticias/noticias/93239-tesouraco-de-flavio-bolsonaro-pode-eliminar-2-2-milhoes-de-empregos-e-retirar-r-68-7-bi-da-renda-dos-trabalhadores-revela-estudo-inedito-do-dieese"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-1.5 inline-flex items-center gap-1 text-[11px] sm:text-xs font-semibold text-red-800 hover:text-red-950 underline underline-offset-2"
+              >
+                Fonte: DIEESE / DIAP
+                <ExternalLink className="w-3 h-3 shrink-0" />
+              </a>
+            </li>
+
+            <li className="relative pl-4">
+              <span className="absolute left-0 top-2 w-1.5 h-1.5 rounded-full bg-red-800" />
+              <h3 className="text-xs sm:text-sm font-bold text-stone-800">
+                Previdência e BPC (Premissas de R$ 100 bi e R$ 30 bi)
               </h3>
               <p className="mt-1 text-xs sm:text-sm text-stone-600 leading-relaxed">
                 <strong className="text-stone-700">Fato:</strong> a principal medida estudada é desvincular
                 aposentadorias, pensões e BPC do salário mínimo. Cerca de <strong className="text-stone-700">dois
                 terços</strong> dos benefícios do INSS correspondem a um salário mínimo. Corrigir só pela inflação,
-                enquanto o mínimo tem ganho real, reduz o poder de compra ano após ano. O CDPP estima economia de{' '}
+                enquanto o mínimo tem ganho real, reduz o poder de compra relativo ao salário mínimo. O CDPP estima economia de{' '}
                 <strong className="text-stone-700">R$ 1,1 trilhão em dez anos</strong>.
               </p>
               <a
@@ -76,7 +101,7 @@ export default function Footer() {
             <li className="relative pl-4">
               <span className="absolute left-0 top-2 w-1.5 h-1.5 rounded-full bg-red-800" />
               <h3 className="text-xs sm:text-sm font-bold text-stone-800">
-                Saúde e Educação (Limite de R$ 80 bi)
+                Saúde e Educação (Premissa de R$ 80 bi)
               </h3>
               <p className="mt-1 text-xs sm:text-sm text-stone-600 leading-relaxed">
                 <strong className="text-stone-700">Fato:</strong> o fim dos pisos constitucionais desobriga a União
@@ -111,16 +136,17 @@ export default function Footer() {
             <li className="relative pl-4">
               <span className="absolute left-0 top-2 w-1.5 h-1.5 rounded-full bg-red-800" />
               <h3 className="text-xs sm:text-sm font-bold text-stone-800">
-                Máquina Pública / Despesas Discricionárias (Limite de R$ 40 bi)
+                Máquina Pública / Despesas Discricionárias (Premissa de R$ 40 bi)
               </h3>
               <p className="mt-1 text-xs sm:text-sm text-stone-600 leading-relaxed">
                 <strong className="text-stone-700">Fato:</strong> o orçamento discricionário total de 2026 é{' '}
                 <strong className="text-stone-700">R$ 256,4 bi</strong>; o espaço realmente livre, após pisos e
                 despesas rígidas, é de cerca de <strong className="text-stone-700">R$ 78 bi</strong> (R$ 3 de cada
-                R$ 100). O limite de R$ 40 bi é uma estimativa conservadora do custeio administrativo (viagens,
-                diárias, material e serviços) que pode ser bloqueado antes de paralisar a máquina. Em 2025, um
-                bloqueio de <strong className="text-stone-700">R$ 41 bi</strong> já foi descrito como risco de
-                “shutdown da máquina”; o Tesouro alertou que aprofundar o contingenciamento causaria “colapso”.
+                R$ 100). O limite de R$ 40 bi é uma premissa conservadora: a Câmara estima cerca de R$ 70 bi de
+                custeio administrativo (viagens, diárias, material e serviços) e aponta risco de paralisia em
+                bloqueios maiores. Em 2025, um bloqueio de <strong className="text-stone-700">R$ 41 bi</strong> já
+                foi descrito como risco de “shutdown da máquina”; o Tesouro alertou que aprofundar o
+                contingenciamento causaria “colapso”.
               </p>
               <div className="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-[11px] sm:text-xs font-semibold">
                 <a
@@ -130,6 +156,16 @@ export default function Footer() {
                   className="inline-flex items-center gap-1 text-red-800 hover:text-red-950 underline underline-offset-2"
                 >
                   Câmara (LOA 2026)
+                  <ExternalLink className="w-3 h-3 shrink-0" />
+                </a>
+                <span className="text-stone-400">•</span>
+                <a
+                  href="https://www.camara.leg.br/noticias/1151191-governo-podera-ter-dificuldade-com-custeio-da-maquina-publica-nos-proximos-anos/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1 text-red-800 hover:text-red-950 underline underline-offset-2"
+                >
+                  Câmara (custeio ~R$ 70 bi)
                   <ExternalLink className="w-3 h-3 shrink-0" />
                 </a>
                 <span className="text-stone-400">•</span>
