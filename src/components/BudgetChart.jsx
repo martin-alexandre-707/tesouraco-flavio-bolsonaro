@@ -109,19 +109,9 @@ export default function BudgetChart() {
       </div>
 
       <div className="mt-4 pt-3 border-t border-stone-200">
-        <h4 className="text-[11px] sm:text-xs font-bold text-stone-700 mb-1">
-          Como o corte funciona na vida real?
-        </h4>
-        <p className="text-[10px] sm:text-[11px] text-stone-500 leading-relaxed">
-          O governo não pode simplesmente “deixar de pagar” aposentados ou dar calote. Para economizar,
-          a equipe econômica estudou medidas drásticas de mudança nas leis. Os limites de cada barra abaixo
-          representam o <strong className="text-stone-700">MÁXIMO</strong> de bilhões que essas medidas
-          conseguiriam arrancar de cada setor ao longo de anos. Tente chegar aos{' '}
-          <strong className="text-stone-700">R$ 250 bilhões</strong> propostos.
-        </p>
         <a
           href="#metodologia"
-          className="mt-2 inline-flex items-center gap-1 text-[10px] sm:text-[11px] font-semibold text-red-800 hover:text-red-950 underline underline-offset-2"
+          className="inline-flex items-center gap-1 text-[10px] sm:text-[11px] font-semibold text-red-800 hover:text-red-950 underline underline-offset-2"
         >
           Ver metodologia e fontes
           <ArrowDownCircle className="w-3 h-3" aria-hidden="true" />

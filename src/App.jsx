@@ -256,7 +256,41 @@ export default function App() {
             </div>
           </div>
 
-          <BudgetChart />
+          {/* Aviso curto: contexto antes da ação, sem virar aula */}
+          <div className="mb-6 sm:mb-8 rounded-xl border border-orange-200 bg-orange-50 p-4 sm:p-5">
+            <div className="flex items-start gap-2.5">
+              <div className="p-2 rounded-lg bg-orange-100 text-orange-800 shrink-0" aria-hidden="true">
+                <AlertTriangle className="w-4 h-4" />
+              </div>
+              <div className="flex-1">
+                <h3 className="text-xs sm:text-sm font-bold text-stone-900 mb-1">
+                  Como o corte funciona na vida real?
+                </h3>
+                <p className="text-xs sm:text-sm text-stone-700 leading-relaxed">
+                  O governo não pode simplesmente “deixar de pagar” aposentados ou dar calote. Os limites abaixo
+                  são o <strong className="text-stone-900">máximo estimado</strong> de economia com mudanças na lei —
+                  não o orçamento total de cada área. Agora tente chegar aos{' '}
+                  <strong className="text-stone-900">R$ 250 bilhões</strong>.
+                </p>
+                <div className="mt-2.5 flex flex-wrap items-center gap-x-2 gap-y-1.5">
+                  <div className="flex h-2 w-24 overflow-hidden rounded-full bg-stone-200" aria-hidden="true">
+                    <span className="h-full bg-red-800" style={{ width: '90%' }} />
+                    <span className="h-full bg-emerald-600" style={{ width: '10%' }} />
+                  </div>
+                  <span className="text-[10px] font-mono uppercase tracking-wider text-stone-600">
+                    90% obrigatório • 10% discricionário
+                  </span>
+                  <a
+                    href="#raio-x"
+                    className="inline-flex items-center gap-1 text-[10px] sm:text-[11px] font-semibold text-red-800 hover:text-red-950 underline underline-offset-2 sm:ml-auto"
+                  >
+                    Ver o raio-X completo
+                    <ArrowDownCircle className="w-3 h-3" aria-hidden="true" />
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
 
           {/* Os 4 Sliders Controlados por Estado com botões táteis responsivos */}
           <div className="space-y-6 sm:space-y-8">
@@ -492,6 +526,23 @@ export default function App() {
             </div>
           </div>
         )}
+
+        {/* Raio-X completo: aprofundamento depois da ação */}
+        <section id="raio-x" className="scroll-mt-24 mt-10 sm:mt-12">
+          <div className="text-center max-w-2xl mx-auto mb-4 sm:mb-5">
+            <span className="text-[10px] font-mono uppercase tracking-widest text-red-800 font-bold">
+              A matemática do orçamento
+            </span>
+            <h2 className="text-xl sm:text-3xl font-serif font-black text-stone-950 mt-1">
+              Por que a conta não fecha?
+            </h2>
+            <p className="text-xs sm:text-sm text-stone-600 leading-relaxed mt-2">
+              Você viu os limites. Agora veja de onde teriam que sair os R$ 250 bilhões — e por que só uma fatia
+              pequena do orçamento é realmente livre.
+            </p>
+          </div>
+          <BudgetChart />
+        </section>
 
         {/* Indicador de rolagem */}
         <div className="text-center pt-2">

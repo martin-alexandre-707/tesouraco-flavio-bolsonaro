@@ -103,10 +103,10 @@ export default function Header({
               type="button"
               onClick={onScrollToSimulator}
               tabIndex={isScrolled ? 0 : -1}
-              className="px-2.5 sm:px-3 py-1.5 bg-red-800 hover:bg-red-700 active:bg-red-900 text-white rounded-lg text-xs font-semibold flex items-center gap-1 transition cursor-pointer shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+              className="px-2 sm:px-3 py-1.5 bg-red-800 hover:bg-red-700 active:bg-red-900 text-white rounded-lg text-xs font-semibold flex items-center gap-1 transition cursor-pointer shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
               aria-label="Voltar ao simulador para ajustar os cortes"
             >
-              <span>Ajustar cortes</span>
+              <span className="hidden sm:inline">Ajustar cortes</span>
               <ArrowUp className="w-3.5 h-3.5" aria-hidden="true" />
             </button>
           </div>
