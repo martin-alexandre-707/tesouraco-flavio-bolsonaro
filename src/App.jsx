@@ -322,7 +322,7 @@ export default function App() {
               id="slider-previdencia"
               number={2}
               title="Previdência (INSS)"
-              subtitle="Economia gerada ao desvincular a aposentadoria do salário mínimo. A correção pelo INPC preserva o valor real, mas não acompanha os ganhos reais do mínimo; o idoso perde poder de compra com o tempo."
+              subtitle="A desvinculação do salário mínimo. Se o benefício for corrigido apenas pela inflação geral (INPC), o idoso perde os ganhos reais anuais. Como a inflação de medicamentos e serviços de saúde tende a ser maior que a média, o aposentado perde poder de compra e empobrece ao longo dos anos."
               value={previdencia}
               max={SLIDER_LIMITS.previdencia}
               step={10}
@@ -350,7 +350,7 @@ export default function App() {
               id="slider-saude-educacao"
               number={3}
               title="Saúde e Educação (Fim dos Pisos)"
-              subtitle="Dinheiro retido ao mudar a regra de correção dos pisos constitucionais. O limite de 80 bi é uma premissa; a projeção Folha/InfoMoney vai de R$ 23 bi no 1º ano a R$ 145 bi no 10º."
+              subtitle="A alteração dos pisos constitucionais. Na prática, estrangular o orçamento da Saúde significa menos remédios nos postos, aumento brutal no tempo de espera nas UPAs e atraso em cirurgias. Na Educação, o corte ameaça a manutenção de laboratórios, universidades e bolsas de pesquisa."
               value={saudeEducacao}
               max={SLIDER_LIMITS.saudeEducacao}
               step={10}
@@ -380,7 +380,7 @@ export default function App() {
               id="slider-social"
               number={4}
               title="Programas Sociais (BPC)"
-              subtitle="Economia gerada ao desvincular o BPC (benefício de idosos e PcDs) do salário mínimo, fazendo o BPC valer cada vez menos com o passar do tempo."
+              subtitle="Impacto no BPC. Sem os ganhos reais do salário mínimo, idosos em situação de pobreza e pessoas com deficiência severa (PcDs) terão sua renda achatada. A matemática do ajuste inviabiliza promessas de ampliação de redes de assistência e cuidado a pessoas atípicas."
               value={social}
               max={SLIDER_LIMITS.social}
               step={10}
@@ -547,6 +547,15 @@ export default function App() {
             </p>
           </div>
           <BudgetChart />
+
+          <div className="mt-5 rounded-xl border-l-4 border-red-800 bg-stone-100 p-4 sm:p-5">
+            <p className="text-sm sm:text-base text-stone-700 leading-relaxed">
+              <strong className="text-stone-900">A contradição exposta pelos números:</strong> é matematicamente
+              inviável retirar R$ 250 bilhões (2% do PIB) da economia pública sem atingir as despesas obrigatórias.
+              O simulador demonstra que prometer proteger a saúde, a educação e a aposentadoria enquanto se aplica
+              um corte dessa magnitude é uma equação que não se sustenta na realidade do Orçamento Federal.
+            </p>
+          </div>
         </section>
 
         {/* Indicador de rolagem */}
