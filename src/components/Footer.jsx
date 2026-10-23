@@ -27,7 +27,6 @@ export default function Footer() {
             um ajuste de R$ 194 bi (51% transferências, 17% pessoal, 32% outras despesas), das projeções
             Folha/InfoMoney para os pisos e do espaço realmente livre apontado pela IFI. São médias anuais; em
             4 anos, o acumulado é cerca de 4x. As reportagens falam em R$ 200–250 bi; usamos R$ 250 bi como teto.
-            A campanha nega posição oficial.
           </p>
 
           <ul className="space-y-5">
@@ -39,8 +38,7 @@ export default function Footer() {
               <p className="mt-1 text-xs sm:text-sm text-stone-600 leading-relaxed">
                 <strong className="text-stone-700">Fato:</strong> a proposta central atribuída ao plano de Flávio
                 Bolsonaro é um ajuste de 2% do PIB — cerca de R$ 250 bilhões — concentrado em despesas obrigatórias,
-                segundo reportagens de Folha e InfoMoney. A campanha nega posição oficial; outras reportagens falam
-                em R$ 200 bilhões.
+                segundo reportagens de Folha e InfoMoney. Outras reportagens falam em R$ 200 bilhões.
               </p>
               <a
                 href="https://www.infomoney.com.br/politica/plano-de-ajuste-fiscal-de-flavio-bolsonaro-preve-corte-de-2-do-pib-diz-jornal/"
@@ -84,7 +82,7 @@ export default function Footer() {
                 <strong className="text-stone-700">Fato:</strong> a principal medida estudada é desvincular
                 aposentadorias, pensões e BPC do salário mínimo. Cerca de <strong className="text-stone-700">dois
                 terços</strong> dos benefícios do INSS correspondem a um salário mínimo. Corrigir só pela inflação,
-                enquanto o mínimo tem ganho real, reduz o poder de compra relativo ao salário mínimo. O CDPP estima economia de{' '}
+                enquanto o mínimo tem ganho real, reduz o poder de compra com o tempo. O CDPP estima economia de{' '}
                 <strong className="text-stone-700">R$ 1,1 trilhão em dez anos</strong>.
               </p>
               <a

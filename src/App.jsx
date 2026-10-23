@@ -155,7 +155,7 @@ export default function App() {
               <span>cortar R$ 250 bilhões</span>
               <ExternalLink className="w-3.5 h-3.5 sm:w-4 sm:h-4 inline text-red-700 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
             </a>
-            , segundo a Folha. A campanha nega posição oficial. Tente você mesmo fechar essa conta usando os dados reais do Governo Federal.
+            , segundo a Folha. Tente você mesmo fechar essa conta usando os dados reais do Governo Federal.
           </p>
         </div>
 
@@ -318,7 +318,7 @@ export default function App() {
               id="slider-previdencia"
               number={2}
               title="Previdência (INSS)"
-              subtitle="Economia gerada ao desvincular a aposentadoria do salário mínimo. A correção pelo INPC preserva o valor real, mas não acompanha os ganhos reais do mínimo; o idoso perde poder de compra relativo."
+              subtitle="Economia gerada ao desvincular a aposentadoria do salário mínimo. A correção pelo INPC preserva o valor real, mas não acompanha os ganhos reais do mínimo; o idoso perde poder de compra com o tempo."
               value={previdencia}
               max={SLIDER_LIMITS.previdencia}
               step={10}
@@ -376,7 +376,7 @@ export default function App() {
               id="slider-social"
               number={4}
               title="Programas Sociais (BPC)"
-              subtitle="Economia gerada ao corrigir o BPC (benefício de idosos e PcDs) apenas pela inflação e revisar a elegibilidade."
+              subtitle="Economia gerada ao desvincular o BPC (benefício de idosos e PcDs) do salário mínimo, fazendo o BPC valer cada vez menos com o passar do tempo."
               value={social}
               max={SLIDER_LIMITS.social}
               step={10}
@@ -385,8 +385,8 @@ export default function App() {
               onIncrease={() => alterarValor(setSocial, social, 10, SLIDER_LIMITS.social)}
               icon={Users}
               iconClass="bg-purple-100 text-purple-800"
-              sourceHref="https://bpmoney.com.br/economia/ajuste-fiscal-flavio-bolsonaro-incognita-mercado-o-que-falta/"
-              sourceTitle="Campanha nega cortar BPC e Bolsa Família; o corte é cenário do simulador"
+              sourceHref="https://diap.org.br/index.php/noticias/noticias/93239-tesouraco-de-flavio-bolsonaro-pode-eliminar-2-2-milhoes-de-empregos-e-retirar-r-68-7-bi-da-renda-dos-trabalhadores-revela-estudo-inedito-do-dieese"
+              sourceTitle="Estudo DIEESE: 51% do corte recai sobre transferências de renda"
               sourceContent={
                 social > 0
                   ? 'Revisão do BPC pode reduzir renda de famílias vulneráveis'
@@ -854,7 +854,7 @@ export default function App() {
                 </div>
                 <p className="text-xs sm:text-sm text-stone-700 leading-relaxed">
                   Em julho de 2026, o consumo caiu para <strong>46,3 kg por pessoa/ano</strong> — quase 5 kg
-                  abaixo de 2025. A queda é atribuída a menos abate e mais exportação, não diretamente ao ajuste.
+                  abaixo de 2025.
                 </p>
               </div>
               <a
